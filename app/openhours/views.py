@@ -1,6 +1,8 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from app import db
 from app.models import Openhour
 from app.forms import OpenhourForm
+
 
 openhours_blueprint = Blueprint('openhours', __name__, template_folder='templates')
 
