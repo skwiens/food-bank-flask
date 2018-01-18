@@ -2,24 +2,11 @@ from flask import render_template, session, flash, redirect, url_for, request
 from app import app
 from app.oauth_helpers import *
 
-
-from apiclient import discovery
-from oauth2client import client
-from oauth2client import tools
-from oauth2client.file import Storage
-
 import os
 import httplib2
 import google_auth_oauthlib.flow
 import google.oauth2.credentials
 import googleapiclient.discovery
-
-# CLIENT_SECRET_FILE = 'client_secret.json'
-# CLIENT_SECRET_FILE = os.environ['CLIENT_SECRET_FILE']
-# CLIENT_ID = os.environ['CLIENT_SECRET']
-# CLIENT_SECRET = os.environ['CLIENT_SECRET']
-# SCOPES = ['https://www.googleapis.com/auth/gmail.compose', 'https://www.googleapis.com/auth/calendar']
-# APPLICATION_NAME='Bethany Food Bank'
 
 @app.route('/')
 @app.route('/index')
