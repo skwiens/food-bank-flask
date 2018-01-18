@@ -1,7 +1,9 @@
+#app/openhours/views.py
+
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from app import db
 from app.models import Openhour, Volunteer, Note
-from app.forms import OpenhourForm
+from app.forms import OpenhourForm, NoteForm
 
 
 openhours_blueprint = Blueprint('openhours', __name__, template_folder='templates')
@@ -54,3 +56,52 @@ def new_openhour():
         return redirect(url_for('index'))
 
     return render_template('openhour_form.html', form=form)
+
+@openhours_blueprint.route('/<string:id>/notes/new', methods=['GET', 'POST'])
+def new_notes(id):
+    form = NoteForm(request.form)
+    form.author.choices = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.all()]
+    form.author.choices.insert(0, (-1, 'Select your name'))
+
+    openhour = Openhour.query.get(id)
+
+    if request.method == 'POST' and form.validate():
+        new_note = Note(
+            openhour_id = id,
+            author = form.author.data,
+            customers = form.customers.data,
+            body = form.body.data,
+            shopping = form.shopping.data
+        )
+
+        db.session.add(new_note)
+        db.session.commit()
+
+        # Send email based on the Notes
+        ##[ ] Turn this email msg into a template version to send
+        # sender = 'xana.wines@gmail.com'
+        # subject = 'Open Hour: ' + openhour.date.strftime('%m/%d/%Y')
+        # msgHtml = new_note.shopping
+        # msgPlain = new_note.shopping
+        # recipients = []
+        #
+        # for volunteer in openhour.volunteers:
+        #     recipients.append(volunteer.email)
+        #
+        # to = ','.join(recipients)
+        #
+        # SendMessage(sender, to, subject, msgHtml, msgPlain)
+
+        flash('Notes created for %s. Thank you!' % openhour.date.strftime('%m/%d/%Y'), 'success')
+
+        return redirect(url_for('index'))
+
+    return render_template('notes_form.html', form=form)
+
+@openhours_blueprint.route('/<string:id>/notes')
+def notes(id):
+    openhour = Openhour.query.get(id)
+    notes = openhour.notes[0]
+    author = Volunteer.query.get(notes.author)
+
+    return render_template('notes.html', notes=notes, openhour=openhour, author=author)
