@@ -1,0 +1,43 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <!-- <span class="sr-only">Toggle navigation</span> -->
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Bethany Food Bank</a>
+    </div>
+    <!-- <div id="navbar" class="collapse navbar-collapse"> -->
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <!-- <li><a href="/">Home</a></li> -->
+        <!-- <li><a href="/about">Documents</a></li> -->
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Open Hours <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/openhours/new">Add Open Hour</a></li>
+            <li><a href="/openhours">View Open Hours</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Volunteers <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/volunteers/new">Add Volunteer</a></li>
+            <li><a href="/volunteers">View Volunteers</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        {% if session.user %}
+          <li><a href="/logout">Logout</a></li>
+          <!-- <li><a href="/dashboard">Dashboard</a></li> -->
+        {% else %}
+          <!-- <li><a href="/register">Register</a></li> -->
+          <li><a href="/user_login">Login</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

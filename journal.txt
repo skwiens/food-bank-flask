@@ -1,0 +1,27 @@
+SETUP:
+
+- set up git repository
+- create .gitignore
+
+
+- setup virtualenv:
+    $virtualenv venv
+    $source venv/bin/activate
+    $deactivate to deactivate
+
+- set up app package
+  (In Python, a sub-directory that includes a __init__.py file is considered a package, and can be imported. When you import a package, the __init__.py executes and defines what symbols the package exposes to the outside world.)
+
+  app/
+    __init__.py
+    views.py
+  flask-app.py
+
+- flask-app.py
+  import app from app
+  app.run()
+
+- set up initial index view and template(s)
+
+- set up config file
+- set up db
