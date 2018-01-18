@@ -6,8 +6,9 @@ import google_auth_oauthlib.flow
 import google.oauth2.credentials
 import googleapiclient.discovery
 
-CLIENT_SECRET_FILE = os.environ['CLIENT_SECRETS_FILE']
-# CLIENT_SECRET_FILE = 'client_secret.json'
+
+CLIENT_SECRET_FILE = 'client_secret.json'
+CLIENT_SECRET_FILE = os.environ['CLIENT_SECRET_FILE']
 CLIENT_SECRET = os.environ['CLIENT_SECRET']
 CLIENT_SECRET = os.environ['CLIENT_SECRET']
 SCOPES = ['https://www.googleapis.com/auth/gmail.compose', 'https://www.googleapis.com/auth/calendar']
