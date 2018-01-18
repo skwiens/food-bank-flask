@@ -32,7 +32,7 @@ def new_volunteer():
         db.session.add(new_volunteer)
         db.session.commit()
 
-        flash('Volunteer ' + new_volunteer.name + ' added!', 'success')
+        flash('Volunteer %s added!' % volunteer.name, 'success')
 
         return redirect(url_for('index'))
     return render_template('volunteer_form.html', form=form)
@@ -49,7 +49,7 @@ def edit_volunteer(id):
 
         db.session.commit()
 
-        flash('Information from ' + volunteer.name + ' Updated', 'success')
+        flash('Information for %s Updated' % volunteer.name, 'success')
 
         return redirect(url_for('index'))
     else:
