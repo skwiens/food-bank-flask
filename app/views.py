@@ -2,11 +2,11 @@ from flask import render_template, session, flash, redirect, url_for, request
 from app import app
 from app.oauth_helpers import *
 
-import os
-import httplib2
-import google_auth_oauthlib.flow
-import google.oauth2.credentials
-import googleapiclient.discovery
+# import os
+# import httplib2
+# import google_auth_oauthlib.flow
+# import google.oauth2.credentials
+# import googleapiclient.discovery
 
 @app.route('/')
 @app.route('/index')
@@ -29,13 +29,11 @@ def admin_login():
     if service:
         user_profile = service.users().getProfile(userId='me').execute()
         emailAddress = user_profile['emailAddress']
-        if user_profile['emailAddress'] == 'xana.wines.ada@gmail.com':
+        if user_profile['emailAddress'] == ADMIN_EMAIL:
             session['user']='admin'
             flash('You are now logged in as an administrator', 'success')
-            # redirect(url_for('index'))
         else:
             flash('You do not have admin privileges, please contact Bethany Food Bank if you have any questions', 'danger')
-            redirect(url_for('clear'))
     else:
         flash('Sorry! Something went wrong. Please try again in a few moments', 'danger')
 
