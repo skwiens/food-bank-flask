@@ -7,6 +7,7 @@ from app.forms import OpenhourForm, NoteForm
 
 import googleapiclient.discovery
 import google.oauth2.credentials
+import datetime
 
 openhours_blueprint = Blueprint('openhours', __name__, template_folder='templates')
 
@@ -62,18 +63,8 @@ def new_openhour():
 @openhours_blueprint.route('/<string:id>/post', methods=['GET', 'POST'])
 # @admin_logged_in
 def post_openhour(id):
-    ### POST TO GOOGLE calendar
-
-    ####### WORKS IF DONE WITHIN THE HOUR#################
     credentials = google.oauth2.credentials.Credentials(**session['credentials'])
     service = googleapiclient.discovery.build('calendar', 'v3', credentials=credentials)
-
-    #### INSUFFICIENT PERMISSION########
-    ##############################################
-    # credentials = get_credentials()
-    # http = credentials.authorize(httplib2.Http())
-    # service = discovery.build('calendar', 'v3', http=http)
-    ##############################################
 
     openhour = Openhour.query.get(id)
     date = '{:%Y-%m-%d}'.format(openhour.date)
@@ -92,6 +83,10 @@ def post_openhour(id):
         event = service.events().insert(calendarId='primary', body=event).execute()
         print ('Event created: %s' % (event.get('htmlLink')))
 
+    # Increase date by one day to see easier on the calendar
+    shopdate = openhour.date + datetime.timedelta(days=1)
+    date = '{:%Y-%m-%d}'.format(shopdate)
+
     for shopper in openhour.shoppers:
         event = {
             'summary': 'SHOP: %s' % shopper.name,
@@ -104,6 +99,8 @@ def post_openhour(id):
         }
         event = service.events().insert(calendarId='primary', body=event).execute()
         print ('Event created: %s' % (event.get('htmlLink')))
+
+    
 
     return redirect(url_for('index'))
 
