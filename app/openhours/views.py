@@ -6,6 +6,17 @@ from app.forms import OpenhourForm
 
 openhours_blueprint = Blueprint('openhours', __name__, template_folder='templates')
 
+@openhours_blueprint.route('/')
+def openhours():
+    openhours = Openhour.query.all()
+
+    if openhours:
+        return render_template('openhours.html', openhours=openhours)
+    else:
+        msg = 'No Open Hours Found'
+        return render_template('openhours.html', msg=msg)
+
+
 @openhours_blueprint.route('/new', methods=['GET', 'POST'])
 # @admin_logged_in
 def new_openhour():
