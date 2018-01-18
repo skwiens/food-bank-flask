@@ -65,7 +65,6 @@ def admin_login():
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('gmail', 'v1', http=http)
-
     if service:
         user_profile = service.users().getProfile(userId='me').execute()
         emailAddress = user_profile['emailAddress']

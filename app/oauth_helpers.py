@@ -17,7 +17,7 @@ except ImportError:
     flags = None
 
 CLIENT_SECRET_FILE = os.environ['CLIENT_SECRET_FILE']
-CLIENT_ID = os.environ['CLIENT_SECRET']
+CLIENT_ID = os.environ['CLIENT_ID']
 CLIENT_SECRET = os.environ['CLIENT_SECRET']
 SCOPES = ['https://www.googleapis.com/auth/gmail.compose', 'https://www.googleapis.com/auth/calendar']
 APPLICATION_NAME='Bethany Food Bank'
