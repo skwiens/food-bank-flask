@@ -2,6 +2,8 @@ from flask import redirect, request, url_for, session
 from app import app
 
 import os
+import tempfile
+
 import google_auth_oauthlib.flow
 import google.oauth2.credentials
 import googleapiclient.discovery
@@ -10,6 +12,10 @@ CLIENT_SECRET_FILE = os.environ['CLIENT_SECRET_FILE']
 SCOPES = ['https://www.googleapis.com/auth/gmail.compose', 'https://www.googleapis.com/auth/calendar']
 APPLICATION_NAME='Bethany Food Bank'
 ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
+
+def create_secret_file():
+
+    return CLIENT_SECRET_FILE_PATH
 
 def credentials_to_dict(credentials):
   return {'token': credentials.token,
