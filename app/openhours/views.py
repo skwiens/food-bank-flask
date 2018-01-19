@@ -4,10 +4,16 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 from app import db
 from app.models import Openhour, Volunteer, Note
 from app.forms import OpenhourForm, NoteForm
+from app.email_helpers import *
 
 import googleapiclient.discovery
 import google.oauth2.credentials
 import datetime
+
+import os
+
+
+ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
 
 openhours_blueprint = Blueprint('openhours', __name__, template_folder='templates')
 
@@ -69,8 +75,9 @@ def post_openhour(id):
     openhour = Openhour.query.get(id)
     date = '{:%Y-%m-%d}'.format(openhour.date)
 
-    # Post to calendar
+
     for volunteer in openhour.volunteers:
+        # Post to calendar
         event = {
             'summary': 'OH: %s' % volunteer.name,
             'start': {
@@ -82,6 +89,15 @@ def post_openhour(id):
         }
         event = service.events().insert(calendarId='primary', body=event).execute()
         print ('Event created: %s' % (event.get('htmlLink')))
+
+        # Send email to volunteer
+        sender = ADMIN_EMAIL
+        to = volunteer.email
+        subject = 'Food Bank %s' % openhour.date.strftime('%m/%d/%Y')
+        msgHtml = '<h1>You are scheduled to volunteer!</h1>'
+        msgPlain = 'You are scheduled to volunteer!'
+
+        SendMessage(sender, to, subject, msgHtml, msgPlain)
 
     # Increase date by one day to see easier on the calendar
     shopdate = openhour.date + datetime.timedelta(days=1)
@@ -100,7 +116,16 @@ def post_openhour(id):
         event = service.events().insert(calendarId='primary', body=event).execute()
         print ('Event created: %s' % (event.get('htmlLink')))
 
-    
+        # Send email to shopper
+        sender = ADMIN_EMAIL
+        to = volunteer.email
+        subject = 'Food Bank %s' % openhour.date.strftime('%m/%d/%Y')
+        msgHtml = '<h1>You are scheduled to volunteer!</h1>'
+        msgPlain = 'You are scheduled to volunteer!'
+
+        SendMessage(sender, to, subject, msgHtml, msgPlain)
+
+
 
     return redirect(url_for('index'))
 
