@@ -2,12 +2,6 @@ from flask import render_template, session, flash, redirect, url_for, request
 from app import app
 from app.oauth_helpers import *
 
-# import os
-# import httplib2
-# import google_auth_oauthlib.flow
-# import google.oauth2.credentials
-# import googleapiclient.discovery
-
 @app.route('/')
 @app.route('/index')
 def index():
