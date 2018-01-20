@@ -9,11 +9,25 @@ import google_auth_oauthlib.flow
 import google.oauth2.credentials
 import googleapiclient.discovery
 
-CLIENT_SECRET_FILE = json.loads(os.environ['CLIENT_SECRETS_FILE'])
+# CLIENT_SECRET_FILE = json.loads(os.environ['CLIENT_SECRETS_FILE'])
+# CLIENT_SECRET_FILE = os.environ['CLIENT_SECRETS_FILE']
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.compose', 'https://www.googleapis.com/auth/calendar']
 APPLICATION_NAME='Bethany Food Bank'
 ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
+
+def client_secrets():
+    secret =  {
+        "web": {
+            "client_id": os.environ['CLIENT_ID'],
+            "client_secret": os.environ['CLIENT_SECRET'],
+            "redirect_uris": ['https://bethany-food-bank.herokuapp.com/oauth2callback', 'http://localhost:5000/oauth2callback'],
+            "auth_uri": 'https://accounts.google.com/o/oauth2/auth',
+            "token_uri": 'https://accounts.google.com/o/oauth2/token'
+        }
+    }
+
+    return secret
 
 def credentials_to_dict(credentials):
   return {'token': credentials.token,
@@ -25,6 +39,8 @@ def credentials_to_dict(credentials):
 
 @app.route('/authorize')
 def authorize():
+    CLIENT_SECRET_FILE = client_secrets()
+    print(CLIENT_SECRET_FILE)
     flow=google_auth_oauthlib.flow.Flow.from_client_config(client_config=CLIENT_SECRET_FILE, scopes=SCOPES)
 
     flow.redirect_uri = url_for('oauth2callback', _external=True)
@@ -39,6 +55,7 @@ def authorize():
 
 @app.route('/oauth2callback')
 def oauth2callback():
+    CLIENT_SECRET_FILE = client_secrets()
     state = session['state']
 
     flow=google_auth_oauthlib.flow.Flow.from_client_config(client_config=CLIENT_SECRET_FILE, scopes=SCOPES)
