@@ -11,6 +11,9 @@ from app.oauth_helpers import *
 @app.route('/')
 @app.route('/index')
 def index():
+    # create_secret_file()
+    # CLIENT_SECRET_FILE_PATH=os.environ['CLIENT_SECRET_FILE_PATH']
+    # print(CLIENT_SECRET_FILE_PATH)
     return render_template('index.html')
 
 @app.route('/admin_login')
