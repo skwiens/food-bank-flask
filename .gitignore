@@ -1,3 +1,7 @@
 client_secret.json
 
 rundev.sh
+
+.pyc
+
+__pycache__
