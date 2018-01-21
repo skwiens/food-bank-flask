@@ -38,10 +38,11 @@ class Volunteer(db.Model):
     notes = db.relationship('Note', backref='openhour', lazy=True)
 
 
-    def __init__(self, name, email, role):
+    def __init__(self, name, email, role, active):
         self.name = name
         self.email = email
         self.role = role
+        self.active = active
 
     def __repr__(self):
         return "<Volunteer '{}'>".format(self.name)

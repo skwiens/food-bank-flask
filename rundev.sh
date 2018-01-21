@@ -10,3 +10,4 @@ export CLIENT_SECRET='yNkGWUO9oIxjxqbxYlClvJKs'
 echo $DATABASE_URL
 
 python flask-app.py
+# python
