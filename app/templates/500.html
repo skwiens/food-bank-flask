@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="container">
+      <div class="row">
+          <div class="col-md-12">
+              <div class="error-template">
+                  <h1 class="text-center">Oops!</h1>
+                  <h2 class="text-center">500 Error</h2>
+                  <div class="error-details text-center">
+                      Sorry, an unexpected error has occurred!
+                  </div>
+                  <br>
+                  <div class="error-actions text-center">
+                      <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>Take Me Home </a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+{% endblock %}
