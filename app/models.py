@@ -21,8 +21,9 @@ class Openhour(db.Model):
     shoppers = db.relationship('Volunteer', secondary=openhour_shoppers, backref='openhourshoppers', lazy='dynamic' )
     notes = db.relationship('Note', backref='openhournotes', lazy=True)
 
-    def __init__(self, date):
+    def __init__(self, date, posted):
         self.date = date
+        self.posted = posted
 
     def __repr__(self):
         return "<Openhour '{}'>".format(self.date)

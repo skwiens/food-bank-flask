@@ -1,0 +1,18 @@
+Hello Volunteer Team!
+
+
+{{ volunteers }} just a reminder you are scheduled for the food bank this coming Monday, January 8. Please arrive at 5:45pm.
+
+
+The back door (west door) code is {{ door_code }}.
+
+The pantry code is {{ pantry_code }}
+
+
+{{ shoppers }} you are our shoppers next week.
+
+
+
+Thank you all!
+
+Bethany Food Bank Team

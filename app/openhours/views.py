@@ -3,7 +3,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from app import db
 from app.models import Openhour, Volunteer, Note
-from app.forms import OpenhourForm, NoteForm
+from app.forms import OpenhourForm, NoteForm, ReminderEmailForm
 from app.email_helpers import *
 
 import os
@@ -40,7 +40,7 @@ def new_openhour():
     form.shoppers.choices.insert(0, (-1, 'None'))
 
     if request.method == 'POST' and form.validate():
-        new_openhour = Openhour(date=form.date.data)
+        new_openhour = Openhour(date=form.date.data, posted=False)
         db.session.add(new_openhour)
 
         # Add in any volunteers and shoppers
@@ -56,7 +56,7 @@ def new_openhour():
 
         flash('Record for %s saved!' % new_openhour.date.strftime('%m/%d/%Y'), 'success')
 
-        return redirect(url_for('index'))
+        return redirect(url_for('openhours.index'))
 
     return render_template('openhour_form.html', form=form)
 
@@ -97,6 +97,48 @@ def edit_openhour(id):
     else:
         return render_template('openhour_form.html', form=form)
 
+@openhours_blueprint.route('/<string:id>/reminder_email', methods=['GET', 'POST'])
+def reminder_email(id):
+    openhour = Openhour.query.get(id)
+    form = ReminderEmailForm(request.form)
+
+    if request.method == 'POST':
+        start_time = form.start_time.data
+        door_code = form.door_code.data
+        pantry_code = form.pantry_code.data
+
+        volunteer_list = []
+        emails_list = [ADMIN_EMAIL]
+        for volunteer in openhour.volunteers:
+            volunteer_list.append(volunteer.name.split()[0])
+            emails_list.append(volunteer.email)
+
+        shopper_list = []
+        for shopper in openhour.shoppers:
+            shopper_list.append(shopper.name.split()[0])
+            emails_list.append(shopper.email)
+
+        volunteers = ", ".join(volunteer_list)
+        shoppers = ', '.join(shopper_list)
+        emails = ', '.join(emails_list)
+
+        sender = ADMIN_EMAIL
+        to = emails
+        subject = 'Food Bank ... %s ' % openhour.date.strftime('%b %d')
+        msgHtml = render_template('reminder_email.html', volunteers=volunteers, shoppers=shoppers, date=openhour.date.strftime('%b %d'), start_time=start_time, door_code=door_code, pantry_code=pantry_code)
+        msgPlain = render_template('reminder_email.txt', volunteers=volunteers, shoppers=shoppers, date=openhour.date.strftime('%b %d'), start_time=start_time, door_code=door_code, pantry_code=pantry_code)
+
+        SendMessage(sender, to, subject, msgHtml, msgPlain)
+
+        flash('Reminder Email %s Sent' % openhour.date.strftime('%b %d, %Y'), 'success')
+
+        return redirect(url_for('openhours.index'))
+    else:
+        return render_template('reminder_form.html', form=form, openhour=openhour)
+
+
+
+
 @openhours_blueprint.route('/<string:id>/post', methods=['GET', 'POST'])
 # @admin_logged_in
 def post_openhour(id):
@@ -128,6 +170,8 @@ def post_openhour(id):
         msgPlain = render_template('schedule_email.txt', volunteer=volunteer.name, date=openhour.date.strftime('%b %d'))
 
         SendMessage(sender, to, subject, msgHtml, msgPlain)
+        openhour.posted = True
+        db.session.commit()
 
     # Increase date by one day to see easier on the calendar
     shopdate = openhour.date + datetime.timedelta(days=1)
@@ -188,7 +232,7 @@ def new_notes(id):
         # for volunteer in openhour.volunteers:
         #     recipients.append(volunteer.email)
         #
-        # to = ','.join(recipients)
+        # to = ', '.join(recipients)
         #
         # SendMessage(sender, to, subject, msgHtml, msgPlain)
 

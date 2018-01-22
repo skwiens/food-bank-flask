@@ -39,6 +39,12 @@ class UserForm(Form):
     username = StringField('Username', [validators.Length(min=1, max=50)])
     password = StringField('Password', [validators.DataRequired()])
 
+class ReminderEmailForm(Form):
+    start_time = StringField('Start Time', [validators.DataRequired()])
+    door_code = StringField('Door Code', [validators.DataRequired()])
+    pantry_code = StringField('Pantry Code', [validators.DataRequired()])
+
+
 class EmailForm(Form):
     send_date = DateField('Send Date', format='%Y-%m-%d')
     recipients = StringField('To: ')
