@@ -64,10 +64,6 @@ def new_openhour():
 # @admin_logged_in
 def edit_openhour(id):
 
-    # my_choices = [('1', 'Choice1'), ('2', 'Choice2'), ('3', 'Choice3')]
-    #
-    # SelectMultipleField(choices = my_choices, default = ['1', '3'])
-
     openhour = Openhour.query.get(id)
     form = OpenhourForm(request.form, obj=openhour)
 
@@ -76,20 +72,9 @@ def edit_openhour(id):
     form.volunteers.choices = volunteer_list
     form.volunteers.choices.insert(0, (-1, 'None'))
 
-    # current_vols = []
-    # for volunteer in openhour.volunteers:
-    #     current_vols.append(str(volunteer.id))
-    # form.volunteers.data = current_vols
-
     shopper_list = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role != 'open-hours').all()]
     form.shoppers.choices = shopper_list
     form.shoppers.choices.insert(0, (-1, 'None'))
-
-    # current_shop = []
-    # for shopper in openhour.shoppers:
-    #     current_shop.append(str(shopper.id))
-    # form.shoppers.data = current_shop
-
 
     if request.method == 'POST' and form.validate():
         openhour.date=form.date.data
