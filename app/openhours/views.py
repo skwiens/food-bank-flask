@@ -25,7 +25,6 @@ def index():
         msg = 'No Open Hours Found'
         return render_template('openhours.html', msg=msg)
 
-
 @openhours_blueprint.route('/new', methods=['GET', 'POST'])
 # @admin_logged_in
 def new_openhour():
@@ -60,6 +59,58 @@ def new_openhour():
         return redirect(url_for('index'))
 
     return render_template('openhour_form.html', form=form)
+
+@openhours_blueprint.route('/<string:id>/edit', methods=['GET', 'POST'])
+# @admin_logged_in
+def edit_openhour(id):
+
+    # my_choices = [('1', 'Choice1'), ('2', 'Choice2'), ('3', 'Choice3')]
+    #
+    # SelectMultipleField(choices = my_choices, default = ['1', '3'])
+
+    openhour = Openhour.query.get(id)
+    form = OpenhourForm(request.form, obj=openhour)
+
+    #Dynamically create a list of volunteers to select for the openhour
+    volunteer_list = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role != 'shopper').all()]
+    form.volunteers.choices = volunteer_list
+    form.volunteers.choices.insert(0, (-1, 'None'))
+
+    # current_vols = []
+    # for volunteer in openhour.volunteers:
+    #     current_vols.append(str(volunteer.id))
+    # form.volunteers.data = current_vols
+
+    shopper_list = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role != 'open-hours').all()]
+    form.shoppers.choices = shopper_list
+    form.shoppers.choices.insert(0, (-1, 'None'))
+
+    # current_shop = []
+    # for shopper in openhour.shoppers:
+    #     current_shop.append(str(shopper.id))
+    # form.shoppers.data = current_shop
+
+
+    if request.method == 'POST' and form.validate():
+        openhour.date=form.date.data
+        openhour.volunteers = []
+        openhour.shoppers = []
+
+        for volunteer in form.volunteers.data:
+            if volunteer != -1:
+                openhour.volunteers.append(Volunteer.query.get(volunteer))
+
+        for shopper in form.shoppers.data:
+            if shopper != -1:
+                openhour.shoppers.append(Volunteer.query.get(shopper))
+
+        db.session.commit()
+
+        flash('Information for %s Updated' % openhour.date.strftime('%b %d, %Y'), 'success')
+
+        return redirect(url_for('openhours.index'))
+    else:
+        return render_template('openhour_form.html', form=form)
 
 @openhours_blueprint.route('/<string:id>/post', methods=['GET', 'POST'])
 # @admin_logged_in

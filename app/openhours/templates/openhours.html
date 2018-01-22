@@ -6,6 +6,7 @@
   <table class="table table-striped">
     <tr>
       <th></th>
+      <th></th>
       <th>Date</th>
       <!-- <th>Author</th> -->
       <th>Volunteers</th>
@@ -14,16 +15,17 @@
     </tr>
     {% for openhour in openhours %}
       <tr>
-        <td><a href="{{openhour.id}}/edit">Edit</a></td>
-        <td><a href="{{openhour.id}}">{{ openhour.date.strftime('%m/%d/%Y') }}</a></td>
+        <td><a class="btn btn-danger" href="{{openhour.id}}/post">POST</a></td>
+        <td><a class="btn btn-success" href="{{openhour.id}}/edit">Edit</a></td>
+        <td>{{ openhour.date.strftime('%m/%d/%Y') }}</td>
         <td>
           {% for volunteer in openhour.volunteers %}
-            <span>{{volunteer.name}}, </span>
+            <span> {{volunteer.name}}{{ "," if not loop.last }}</span>
           {% endfor %}
         </td>
         <td>
           {% for shopper in openhour.shoppers %}
-            <span>{{shopper.name}}, </span>
+            <span>{{shopper.name}}{{ "," if not loop.last }}</span>
           {% endfor %}
         </td>
         {% if openhour.notes %}
