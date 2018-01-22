@@ -49,7 +49,7 @@ def new_openhour():
                 new_openhour.volunteers.append(Volunteer.query.get(volunteer))
 
         for shopper in form.shoppers.data:
-            if volunteer != -1:
+            if shopper != -1:
                 new_openhour.shoppers.append(Volunteer.query.get(shopper))
 
         db.session.commit()
@@ -118,8 +118,10 @@ def reminder_email(id):
             shopper_list.append(shopper.name.split()[0])
             emails_list.append(shopper.email)
 
-        volunteers = ", ".join(volunteer_list)
-        shoppers = ', '.join(shopper_list)
+
+        # Create a comma separated list with and between the lastt two names
+        volunteers = ' and'.join(', '.join(volunteer_list).rsplit(',',1))
+        shoppers = ' and'.join(', '.join(shopper_list).rsplit(',',1))
         emails = ', '.join(emails_list)
 
         sender = ADMIN_EMAIL
