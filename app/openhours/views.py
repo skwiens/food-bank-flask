@@ -4,12 +4,19 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 from app import db
 from app.models import Openhour, Volunteer, Note
 from app.forms import OpenhourForm, NoteForm
+from app.email_helpers import *
 
+import os
+import googleapiclient.discovery
+import google.oauth2.credentials
+import datetime
+
+ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
 
 openhours_blueprint = Blueprint('openhours', __name__, template_folder='templates')
 
 @openhours_blueprint.route('/')
-def openhours():
+def index():
     openhours = Openhour.query.all()
 
     if openhours:
@@ -34,10 +41,7 @@ def new_openhour():
     form.shoppers.choices.insert(0, (-1, 'None'))
 
     if request.method == 'POST' and form.validate():
-        # new_openhour = Openhour(date=form.date.data)
         new_openhour = Openhour(date=form.date.data)
-
-
         db.session.add(new_openhour)
 
         # Add in any volunteers and shoppers
@@ -51,11 +55,71 @@ def new_openhour():
 
         db.session.commit()
 
-        flash('Record for %s saved! Thank you for volunteering with us!' % new_openhour.date.strftime('%m/%d/%Y'), 'success')
+        flash('Record for %s saved!' % new_openhour.date.strftime('%m/%d/%Y'), 'success')
 
         return redirect(url_for('index'))
 
     return render_template('openhour_form.html', form=form)
+
+@openhours_blueprint.route('/<string:id>/post', methods=['GET', 'POST'])
+# @admin_logged_in
+def post_openhour(id):
+    credentials = google.oauth2.credentials.Credentials(**session['credentials'])
+    service = googleapiclient.discovery.build('calendar', 'v3', credentials=credentials)
+
+    openhour = Openhour.query.get(id)
+    date = '{:%Y-%m-%d}'.format(openhour.date)
+
+    for volunteer in openhour.volunteers:
+        # Post to calendar
+        event = {
+            'summary': 'OH: %s' % volunteer.name,
+            'start': {
+                'date': date
+            },
+            'end': {
+                'date': date
+            }
+        }
+        event = service.events().insert(calendarId='primary', body=event).execute()
+        print ('Event created: %s' % (event.get('htmlLink')))
+
+        # Send email to volunteer
+        sender = ADMIN_EMAIL
+        to = volunteer.email
+        subject = 'Volunteer Bethany Food Bank %s' % openhour.date.strftime('%b %d')
+        msgHtml = render_template('schedule_email.html', volunteer=volunteer.name, date=openhour.date.strftime('%b %d'))
+        msgPlain = render_template('schedule_email.txt', volunteer=volunteer.name, date=openhour.date.strftime('%b %d'))
+
+        SendMessage(sender, to, subject, msgHtml, msgPlain)
+
+    # Increase date by one day to see easier on the calendar
+    shopdate = openhour.date + datetime.timedelta(days=1)
+    date = '{:%Y-%m-%d}'.format(shopdate)
+
+    for shopper in openhour.shoppers:
+        event = {
+            'summary': 'SHOP: %s' % shopper.name,
+            'start': {
+                'date': date
+            },
+            'end': {
+                'date': date
+            }
+        }
+        event = service.events().insert(calendarId='primary', body=event).execute()
+        print ('Event created: %s' % (event.get('htmlLink')))
+
+        # Send email to shopper
+        sender = ADMIN_EMAIL
+        to = shopper.email
+        subject = 'Shop week of  %s for Bethany Food Bank' % openhour.date.strftime('%m/%d/%Y')
+        msgHtml = render_template('shop_schedule_email.html', shopper=shopper.name, date=openhour.date.strftime('%b %d'))
+        msgPlain = render_template('shop_schedule_email.txt', shopper=shopper.name, date=openhour.date.strftime('%b %d'))
+
+        SendMessage(sender, to, subject, msgHtml, msgPlain)
+
+    return redirect(url_for('openhours.index'))
 
 @openhours_blueprint.route('/<string:id>/notes/new', methods=['GET', 'POST'])
 def new_notes(id):
@@ -92,7 +156,7 @@ def new_notes(id):
         #
         # SendMessage(sender, to, subject, msgHtml, msgPlain)
 
-        flash('Notes created for %s. Thank you!' % openhour.date.strftime('%m/%d/%Y'), 'success')
+        flash('Notes created for %s. Thank you for volunteering tonight!' % openhour.date.strftime('%m/%d/%Y'), 'success')
 
         return redirect(url_for('index'))
 
