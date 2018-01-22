@@ -13,9 +13,7 @@ openhour_shoppers = db.Table('openhour_shoppers',
 
 class Openhour(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    # author = db.Column(db.Integer(), db.ForeignKey('volunteer.id'))
-    # author = db.Column(db.String(255))
-    date = db.Column(db.DateTime())
+    date = db.Column(db.DateTime(), unique=True)
     posted = db.Column(db.Boolean)
     volunteers = db.relationship('Volunteer', secondary=openhour_volunteers, backref='openhourvols', lazy='dynamic')
     shoppers = db.relationship('Volunteer', secondary=openhour_shoppers, backref='openhourshoppers', lazy='dynamic' )
@@ -30,9 +28,9 @@ class Openhour(db.Model):
 
 class Volunteer(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(100))
+    name = db.Column(db.String(100), unique=True)
     role = db.Column(db.String(50))
-    email = db.Column(db.String(255), unique=True, nullable=False)
+    email = db.Column(db.String(255), nullable=False)
     active = db.Column(db.Boolean)
     openhours = db.relationship('Openhour', secondary=openhour_volunteers, backref='ohvolunteers', lazy='subquery')
     openhour_shoppers = db.relationship('Openhour', secondary=openhour_shoppers, backref='ohshoppers', lazy='subquery')

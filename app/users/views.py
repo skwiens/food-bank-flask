@@ -5,6 +5,8 @@ from app.models import User
 from app.forms import UserForm
 from app import db
 
+from app.errors import *
+
 users_blueprint = Blueprint('users', __name__, template_folder='templates')
 
 @users_blueprint.route('/')

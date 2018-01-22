@@ -1,8 +1,9 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from app.models import Volunteer
 from app.forms import VolunteerForm
+from app.errors import *
 from app import db
-
+from sqlalchemy import exc
 
 volunteers_blueprint = Blueprint('volunteers', __name__, template_folder='templates')
 
@@ -13,11 +14,9 @@ def volunteers():
         volid = request.form['id']
         volunteer = Volunteer.query.get(volid)
         if request.form['submit'] == 'Mark Active':
-            print('marking active!!!!!!!!!!')
             volunteer.active = True
             flash('Volunteer %s status changed to Active' % volunteer.name, 'success')
         elif request.form['submit'] == 'Mark Inactive':
-            print('MARKING INACTIVEEEEE!!!!')
             volunteer.active = False
             flash('Status of %s changed to Inactive' % volunteer.name, 'success')
 
@@ -45,8 +44,11 @@ def new_volunteer():
             active = True
         )
 
-        db.session.add(new_volunteer)
-        db.session.commit()
+        # try:
+        #     db.session.add(new_volunteer)
+        #     db.session.commit()
+        # except exc.SQLAlchemyError:
+        #     return '<h1>NOPE</h1>'
 
         flash('Volunteer %s added!' % new_volunteer.name, 'success')
 
