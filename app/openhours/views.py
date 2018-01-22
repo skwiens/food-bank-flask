@@ -5,11 +5,15 @@ from app import db
 from app.models import Openhour, Volunteer, Note
 from app.forms import OpenhourForm, NoteForm, ReminderEmailForm
 from app.email_helpers import *
+from dateutil.relativedelta import *
+from datetime import date, timedelta
 
 import os
 import googleapiclient.discovery
 import google.oauth2.credentials
 import datetime
+import calendar
+
 
 ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
 
@@ -24,6 +28,33 @@ def index():
     else:
         msg = 'No Open Hours Found'
         return render_template('openhours.html', msg=msg)
+
+@openhours_blueprint.route('/signup_email', methods=['GET', 'POST'])
+def signup_email():
+    mondays = []
+    now = datetime.datetime.now()
+    monday = now + relativedelta(months=+1, day=1, weekday=MO(1))
+    month = monday.month
+    while monday.month == month:
+        mondays.append(monday.strftime('%B %d'))
+        monday += timedelta(days = 7)
+
+    emails = [ADMIN_EMAIL]
+    volunteers = Volunteer.query.filter(Volunteer.active == True, Volunteer.role != 'shopper')
+    for volunteer in volunteers:
+        emails.append(volunteer.email)
+
+    sender = ADMIN_EMAIL
+    to = ', '.join(emails)
+    subject = 'Food Bank ... %s ' % month
+    msgHtml = render_template('signup_email.html', mondays=mondays, month=month)
+    msgPlain = render_template('signup_email.txt', mondays=mondays, month=month)
+
+    SendMessage(sender, to, subject, msgHtml, msgPlain)
+
+    flash('Email sent for Signups in %s. ' % calendar.month_name[month], 'success')
+
+    return render_template('index.html')
 
 @openhours_blueprint.route('/new', methods=['GET', 'POST'])
 # @admin_logged_in
@@ -137,8 +168,6 @@ def reminder_email(id):
         return redirect(url_for('openhours.index'))
     else:
         return render_template('reminder_form.html', form=form, openhour=openhour)
-
-
 
 
 @openhours_blueprint.route('/<string:id>/post', methods=['GET', 'POST'])

@@ -1,0 +1,15 @@
+Hello!
+
+Wow! It's already time to sign up for {{ month }} at the Food Bank!
+
+Please let me know if you are available from 5:45pm-7pm on any of the following Mondays in {{ month }}!
+
+{% for monday in mondays %}
+
+monday
+
+{% endfor %}
+
+Thank you for all that you do and enjoy your weekend!
+
+Bethany Food Bank Team

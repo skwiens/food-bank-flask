@@ -1,0 +1,14 @@
+<p>Hello!</p>
+
+<p>Wow! It's already time to sign up for {{ month }} at the Food Bank!</p>
+
+<p>Please let me know if you are available from 5:45pm-7pm on any of the following Mondays in {{ month }}:</p>
+<ul>
+  {% for monday in mondays %}
+    <li>{{ monday }}</li>
+  {% endfor %}
+</ul>
+
+<p>Thank you for all that you do and enjoy your weekend!</p>
+
+<p>Bethany Food Bank Team</p>
