@@ -218,23 +218,32 @@ def new_notes(id):
             shopping = form.shopping.data
         )
 
+        shopping_list = new_note.shopping
         db.session.add(new_note)
         db.session.commit()
 
-        # Send email based on the Notes
-        ##[ ] Turn this email msg into a template version to send
-        # sender = 'xana.wines@gmail.com'
-        # subject = 'Open Hour: ' + openhour.date.strftime('%m/%d/%Y')
-        # msgHtml = new_note.shopping
-        # msgPlain = new_note.shopping
-        # recipients = []
-        #
-        # for volunteer in openhour.volunteers:
-        #     recipients.append(volunteer.email)
-        #
-        # to = ', '.join(recipients)
-        #
-        # SendMessage(sender, to, subject, msgHtml, msgPlain)
+        volunteer_list = []
+        shopper_list = []
+        emails = [ADMIN_EMAIL]
+
+        for volunteer in openhour.volunteers:
+            emails.append(volunteer.email)
+            volunteer_list.append(volunteer.name.split()[0])
+
+        for shopper in openhour.shoppers:
+            emails.append(shopper.email)
+            shopper_list.append(shopper.name.split()[0])
+
+        volunteers = ", ".join(volunteer_list)
+        shoppers = ', '.join(shopper_list)
+
+        sender = ADMIN_EMAIL
+        subject = ' Shopping for Open Hour: ' + openhour.date.strftime('%m/%d/%Y')
+        msgHtml = render_template('shopping_email.html', shoppers=shoppers, volunteers=volunteers, shopping_list=shopping_list)
+        msgPlain = render_template('shopping_email.txt', shoppers=shoppers, volunteers=volunteers, shopping_list=shopping_list)
+        to = ', '.join(emails)
+
+        SendMessage(sender, to, subject, msgHtml, msgPlain)
 
         flash('Notes created for %s. Thank you for volunteering tonight!' % openhour.date.strftime('%m/%d/%Y'), 'success')
 

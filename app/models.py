@@ -68,6 +68,7 @@ class Note(db.Model):
     body = db.Column(db.Text())
     shopping = db.Column(db.Text())
 
+
 class Email(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     send_date = db.Column(db.DateTime())

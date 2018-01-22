@@ -1,0 +1,12 @@
+Hello Team!
+
+Thank you {{ volunteers }} for coming in this week! We appreciate all that you do for our community.
+
+{{ shoppers }} you are our shoppers for this week. Here is the shopping list:
+
+{{ shopping_list }}
+
+
+Thank you all!
+
+Bethany Food Bank Team
