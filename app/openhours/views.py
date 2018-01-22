@@ -47,8 +47,8 @@ def signup_email():
     sender = ADMIN_EMAIL
     to = ', '.join(emails)
     subject = 'Food Bank ... %s ' % month
-    msgHtml = render_template('signup_email.html', mondays=mondays, month=month)
-    msgPlain = render_template('signup_email.txt', mondays=mondays, month=month)
+    msgHtml = render_template('signup_email.html', mondays=mondays, month=calendar.month_name[month])
+    msgPlain = render_template('signup_email.txt', mondays=mondays, month=calendar.month_name[month])
 
     SendMessage(sender, to, subject, msgHtml, msgPlain)
 
