@@ -2,6 +2,7 @@
 
 {% block body %}
   <h1>Volunteers</h1>
+  <a href="{{url_for('volunteers.new_volunteer')}}"></a>
   <hr>
   <table class="table table-striped">
     <tr>
@@ -10,14 +11,13 @@
       <th>Role</th>
       <th></th>
       <th></th>
-      <th></th>
     </tr>
     {% for volunteer in volunteers %}
       <tr>
         <td>{{ volunteer.name }}</td>
         <td>{{ volunteer.email }}</td>
         <td>{{ volunteer.role }}</td>
-        <td><a href="{{volunteer.id}}/edit">Edit</a></td>
+        <td><a class="btn btn-info" href="{{volunteer.id}}/edit">Edit</a></td>
         <td>
           <form action="" method="POST">
             {% if volunteer.active == True %}
@@ -29,7 +29,6 @@
             {% endif %}
           </form>
         </td>
-        <td></td>
       </tr>
     {% endfor %}
 

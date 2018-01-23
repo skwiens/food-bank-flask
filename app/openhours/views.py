@@ -26,11 +26,13 @@ def index():
     # openhours = Openhour.query.all()
     openhours = Openhour.query.order_by(Openhour.date.desc()).all()
 
+    next_month = calendar.month_name[(datetime.datetime.now() + relativedelta(months=+1)).month]
+
     if openhours:
-        return render_template('openhours.html', openhours=openhours)
+        return render_template('openhours.html', openhours=openhours, next_month=next_month)
     else:
         msg = 'No Open Hours Found'
-        return render_template('openhours.html', msg=msg)
+        return render_template('openhours.html', msg=msg, next_month=next_month)
 
 @openhours_blueprint.route('/new', methods=['GET', 'POST'])
 @admin_logged_in
@@ -158,6 +160,7 @@ def reminder_email(id):
 @openhours_blueprint.route('/<string:id>/post', methods=['GET', 'POST'])
 @admin_logged_in
 def post_openhour(id):
+
     credentials = google.oauth2.credentials.Credentials(**session['credentials'])
     service = googleapiclient.discovery.build('calendar', 'v3', credentials=credentials)
 
@@ -215,6 +218,8 @@ def post_openhour(id):
 
         SendMessage(sender, to, subject, msgHtml, msgPlain)
 
+    flash('Openhour %s Posted' % openhour.date.strftime('%b %d'), 'success')
+
     return redirect(url_for('openhours.index'))
 
 @openhours_blueprint.route('/<string:id>/notes/new', methods=['GET', 'POST'])
@@ -239,30 +244,30 @@ def new_notes(id):
         db.session.add(new_note)
         db.session.commit()
 
-        volunteer_list = []
-        shopper_list = []
-        emails = [ADMIN_EMAIL]
-
-        for volunteer in openhour.volunteers:
-            emails.append(volunteer.email)
-            volunteer_list.append(volunteer.name.split()[0])
-
-        for shopper in openhour.shoppers:
-            emails.append(shopper.email)
-            shopper_list.append(shopper.name.split()[0])
-
-        volunteers = ", ".join(volunteer_list)
-        shoppers = ', '.join(shopper_list)
-
-        sender = ADMIN_EMAIL
-        subject = ' Shopping for Open Hour: ' + openhour.date.strftime('%m/%d/%Y')
-        msgHtml = render_template('shopping_email.html', shoppers=shoppers, volunteers=volunteers, shopping_list=shopping_list)
-        msgPlain = render_template('shopping_email.txt', shoppers=shoppers, volunteers=volunteers, shopping_list=shopping_list)
-        to = ', '.join(emails)
-
-        SendMessage(sender, to, subject, msgHtml, msgPlain)
-
-        flash('Notes created for %s. Thank you for volunteering tonight!' % openhour.date.strftime('%m/%d/%Y'), 'success')
+        # volunteer_list = []
+        # shopper_list = []
+        # emails = [ADMIN_EMAIL]
+        #
+        # for volunteer in openhour.volunteers:
+        #     emails.append(volunteer.email)
+        #     volunteer_list.append(volunteer.name.split()[0])
+        #
+        # for shopper in openhour.shoppers:
+        #     emails.append(shopper.email)
+        #     shopper_list.append(shopper.name.split()[0])
+        #
+        # volunteers = ", ".join(volunteer_list)
+        # shoppers = ', '.join(shopper_list)
+        #
+        # sender = ADMIN_EMAIL
+        # subject = ' Shopping for Open Hour: ' + openhour.date.strftime('%m/%d/%Y')
+        # msgHtml = render_template('shopping_email.html', shoppers=shoppers, volunteers=volunteers, shopping_list=shopping_list)
+        # msgPlain = render_template('shopping_email.txt', shoppers=shoppers, volunteers=volunteers, shopping_list=shopping_list)
+        # to = ', '.join(emails)
+        #
+        # SendMessage(sender, to, subject, msgHtml, msgPlain)
+        #
+        flash('Notes created for %s. Thank you for volunteering tonight!' % openhour.date.strftime('%B %d'), 'success')
 
         return redirect(url_for('index'))
 
@@ -315,6 +320,8 @@ def shopping_email(id):
 @openhours_blueprint.route('/signup_email', methods=['GET', 'POST'])
 @admin_logged_in
 def signup_email():
+    print('entering signup')
+
     mondays = []
     now = datetime.datetime.now()
     monday = now + relativedelta(months=+1, day=1, weekday=MO(1))
@@ -328,14 +335,18 @@ def signup_email():
     for volunteer in volunteers:
         emails.append(volunteer.email)
 
+    print(emails)
+
     sender = ADMIN_EMAIL
     to = ', '.join(emails)
     subject = 'Food Bank ... %s ' % month
     msgHtml = render_template('signup_email.html', mondays=mondays, month=calendar.month_name[month])
     msgPlain = render_template('signup_email.txt', mondays=mondays, month=calendar.month_name[month])
 
-    SendMessage(sender, to, subject, msgHtml, msgPlain)
-
-    flash('Email sent for Signups in %s. ' % calendar.month_name[month], 'success')
+    result = SendMessage(sender, to, subject, msgHtml, msgPlain)
+    if result == "Error":
+        flash('An error occurred. Please logout, login and try again.', 'danger')
+    else:
+        flash('Email sent for Signups in %s. ' % calendar.month_name[month], 'success')
 
     return render_template('index.html')

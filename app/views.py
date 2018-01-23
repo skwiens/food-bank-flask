@@ -10,6 +10,10 @@ from app.login_helpers import *
 def index():
     return render_template('index.html')
 
+# @app.route('/admin/home')
+# def admin_home():
+#     return render_template('admin_home.html')
+
 @app.route('/admin_login')
 def admin_login():
     if 'credentials' not in session:
@@ -28,13 +32,14 @@ def admin_login():
         emailAddress = user_profile['emailAddress']
         if user_profile['emailAddress'] == ADMIN_EMAIL:
             session['user']='admin'
+            session['admin']='admin'
             flash('You are now logged in as an administrator', 'success')
         else:
             flash('You do not have admin privileges, please contact Bethany Food Bank if you have any questions', 'danger')
     else:
         flash('Sorry! Something went wrong. Please try again in a few moments', 'danger')
 
-    return redirect(url_for('index'))
+    return redirect(url_for('openhours.index'))
 
 @app.route('/logout')
 def logout():

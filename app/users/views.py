@@ -78,7 +78,7 @@ def user_login():
 
                 flash('You are now logged in as a volunteer', 'success')
 
-                return redirect(url_for('home'))
+                return redirect(url_for('openhours.index'))
             else:
                 error = 'Invalid login'
                 return render_template('user_login.html', error=error)
@@ -88,20 +88,20 @@ def user_login():
 
     return render_template('user_login.html')
 
-@users_blueprint.route('/home')
-def home():
-    return render_template('home.html')
+# @users_blueprint.route('/home')
+# def home():
+#     return render_template('home.html')
 
-@users_blueprint.route('/signup')
-def signup():
-    form = SignupForm(request.form)
-
-    form.volunteers.choices = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role != 'shopper').all()]
-
-    openhours = Openhour.query.filter(Openhour.posted == False)
-
-    if request.method == 'POST':
-        volunteer = form.volunteer.data
-        openhour_id = request.form['id']
-
-    return render_template('signup.html')
+# @users_blueprint.route('/signup')
+# def signup():
+#     form = SignupForm(request.form)
+#
+#     form.volunteers.choices = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role != 'shopper').all()]
+#
+#     openhours = Openhour.query.filter(Openhour.posted == False)
+#
+#     if request.method == 'POST':
+#         volunteer = form.volunteer.data
+#         openhour_id = request.form['id']
+#
+#     return render_template('signup.html')

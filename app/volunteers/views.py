@@ -1,3 +1,4 @@
+#app/volunteers/views.py
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from app.models import Volunteer
 from app.forms import VolunteerForm
@@ -44,6 +45,8 @@ def new_volunteer():
             active = True
         )
 
+        db.session.add(new_volunteer)
+        db.session.commit()
         # try:
         #     db.session.add(new_volunteer)
         #     db.session.commit()
@@ -52,7 +55,7 @@ def new_volunteer():
 
         flash('Volunteer %s added!' % new_volunteer.name, 'success')
 
-        return redirect(url_for('index'))
+        return redirect(url_for('volunteers.index'))
     return render_template('volunteer_form.html', form=form)
 
 @volunteers_blueprint.route('/<string:id>/edit', methods=['GET', 'POST'])

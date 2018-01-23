@@ -2,17 +2,15 @@
 
 {% block body %}
   <h1>Open Hours</h1>
-  <button><a href="{{signup_email}}"></a></button>
+    {% if session.admin %}
+      <button><a href="{{url_for('openhours.signup_email')}}">Send Signup Email for {{ next_month }}</a></button>
+    {% endif %}
   <table class="table table-striped">
     <tr>
       <th>Date</th>
-      <!-- <th>Author</th> -->
       <th>Volunteers</th>
       <th>Shoppers</th>
-      <!-- <th>Notes</th>
       <th></th>
-      <th></th>
-      <th></th> -->
     </tr>
     {% for openhour in openhours %}
       <tr>
@@ -27,18 +25,11 @@
             <span>{{shopper.name}}{{ "," if not loop.last }}</span>
           {% endfor %}
         </td>
-        <!-- {% if openhour.notes %}
-          <td><ahref="{{openhour.id}}/notes">View Notes</a></td>
+        {% if not openhour.notes %}
+          <td><a class="btn btn-default" href="{{ url_for('openhours.new_notes', id=openhour.id)}}">Add Notes</a></td>
         {% else %}
-          <td><a class="btn btn-default" href="{{openhour.id}}/notes/new">Add Notes</a></td>
+          <td></td>
         {% endif %}
-        <td><a class="btn btn-success" href="{{openhour.id}}/edit">Edit</a></td>
-        {% if openhour.posted == False %}
-          <td><a class="btn btn-info" href="{{openhour.id}}/post">POST</a></td>
-        {% else %}
-          <td><a class="btn btn-danger" href="{{openhour.id}}/post">Re-POST</a></td>
-        {% endif %}
-        <td><a class="btn btn-info" href="{{openhour.id}}/reminder_email">Send Reminder Email</a></td> -->
     </tr>
   {% endfor %}
 
