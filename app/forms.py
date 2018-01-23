@@ -35,6 +35,9 @@ class ReminderEmailForm(Form):
     door_code = StringField('Door Code', [validators.DataRequired()])
     pantry_code = StringField('Pantry Code', [validators.DataRequired()])
 
+class SignupForm(Form):
+    volunteer = SelectField('Name', coerce=int)
+
 class EmailForm(Form):
     send_date = DateField('Send Date', format='%Y-%m-%d')
     recipients = StringField('To: ')
