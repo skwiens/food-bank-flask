@@ -4,11 +4,13 @@ from app.forms import VolunteerForm
 from app.errors import *
 from app import db
 from sqlalchemy import exc
+from app.login_helpers import *
 
 volunteers_blueprint = Blueprint('volunteers', __name__, template_folder='templates')
 
 @volunteers_blueprint.route('/', methods=['GET', 'POST'])
-def volunteers():
+@admin_logged_in
+def index():
     if request.method == 'POST':
         volid = request.form['id']
         volunteer = Volunteer.query.get(volid)
@@ -23,8 +25,7 @@ def volunteers():
         return redirect(url_for('volunteers.volunteers'))
 
     elif request.method == 'GET':
-        volunteers = Volunteer.query.all()
-
+        volunteers = Volunteer.query.order_by(Volunteer.name.asc()).all()
         if volunteers:
             return render_template('volunteers.html', volunteers=volunteers)
         else:
@@ -32,7 +33,7 @@ def volunteers():
             return render_template('volunteers.html', msg=msg)
 
 @volunteers_blueprint.route('/new', methods=['GET', 'POST'])
-# @admin_logged_in
+@admin_logged_in
 def new_volunteer():
     form = VolunteerForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -55,13 +56,14 @@ def new_volunteer():
     return render_template('volunteer_form.html', form=form)
 
 @volunteers_blueprint.route('/<string:id>/edit', methods=['GET', 'POST'])
-# @admin_logged_in
+@admin_logged_in
 def edit_volunteer(id):
 
     volunteer = Volunteer.query.get(id)
     form = VolunteerForm(request.form, obj=volunteer)
 
     if request.method == 'POST' and form.validate():
+
         form.populate_obj(volunteer)
 
         db.session.commit()

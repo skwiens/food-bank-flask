@@ -4,7 +4,7 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 from app.models import User, Openhour, Volunteer
 from app.forms import UserForm
 from app import db
-
+from app.login_helpers import *
 from app.errors import *
 
 import datetime
@@ -12,6 +12,7 @@ import datetime
 users_blueprint = Blueprint('users', __name__, template_folder='templates')
 
 @users_blueprint.route('/')
+@admin_logged_in
 def users():
     users = User.query.all()
 
@@ -22,7 +23,8 @@ def users():
         return render_template('users.html', msg=msg)
 
 @users_blueprint.route('/new', methods=['GET', 'POST'])
-def new_volunteer():
+@admin_logged_in
+def new_user():
     form = UserForm(request.form)
     if request.method == 'POST' and form.validate():
 
@@ -40,6 +42,7 @@ def new_volunteer():
     return render_template('user_form.html', form=form)
 
 @users_blueprint.route('/1/edit', methods=['GET', 'POST'])
+@admin_logged_in
 def edit_user():
     form = UserForm(request.form)
 
@@ -75,7 +78,7 @@ def user_login():
 
                 flash('You are now logged in as a volunteer', 'success')
 
-                return redirect(url_for('index'))
+                return redirect(url_for('home'))
             else:
                 error = 'Invalid login'
                 return render_template('user_login.html', error=error)
@@ -89,14 +92,16 @@ def user_login():
 def home():
     return render_template('home.html')
 
-# @users_blueprint.route('/signup')
-# def signup():
-#     form = SignupForm(request.form)
-#
-#     form.volunteers.choices = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role != 'shopper').all()]
-#
-#     if request.method == 'POST':
-#         volunteer = form.volunteer.data
-#         openhour_id = request.form['id']
-#
-#     return render_template('signup.html')
+@users_blueprint.route('/signup')
+def signup():
+    form = SignupForm(request.form)
+
+    form.volunteers.choices = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role != 'shopper').all()]
+
+    openhours = Openhour.query.filter(Openhour.posted == False)
+
+    if request.method == 'POST':
+        volunteer = form.volunteer.data
+        openhour_id = request.form['id']
+
+    return render_template('signup.html')

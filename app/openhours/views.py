@@ -8,6 +8,7 @@ from app.email_helpers import *
 from dateutil.relativedelta import *
 from datetime import date, timedelta
 from app.errors import *
+from app.login_helpers import *
 
 import os
 import googleapiclient.discovery
@@ -20,6 +21,7 @@ ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
 openhours_blueprint = Blueprint('openhours', __name__, template_folder='templates')
 
 @openhours_blueprint.route('/')
+@user_logged_in
 def index():
     # openhours = Openhour.query.all()
     openhours = Openhour.query.order_by(Openhour.date.desc()).all()
@@ -31,7 +33,7 @@ def index():
         return render_template('openhours.html', msg=msg)
 
 @openhours_blueprint.route('/new', methods=['GET', 'POST'])
-# @admin_logged_in
+@admin_logged_in
 def new_openhour():
     form = OpenhourForm(request.form)
 
@@ -66,6 +68,7 @@ def new_openhour():
     return render_template('openhour_form.html', form=form)
 
 @openhours_blueprint.route('/<string:id>')
+@admin_logged_in
 def show_openhour(id):
     openhour = Openhour.query.get(id)
 
@@ -73,7 +76,7 @@ def show_openhour(id):
 
 
 @openhours_blueprint.route('/<string:id>/edit', methods=['GET', 'POST'])
-# @admin_logged_in
+@admin_logged_in
 def edit_openhour(id):
 
     openhour = Openhour.query.get(id)
@@ -110,6 +113,7 @@ def edit_openhour(id):
         return render_template('openhour_form.html', form=form)
 
 @openhours_blueprint.route('/<string:id>/reminder_email', methods=['GET', 'POST'])
+@admin_logged_in
 def reminder_email(id):
     openhour = Openhour.query.get(id)
     form = ReminderEmailForm(request.form)
@@ -152,7 +156,7 @@ def reminder_email(id):
 
 
 @openhours_blueprint.route('/<string:id>/post', methods=['GET', 'POST'])
-# @admin_logged_in
+@admin_logged_in
 def post_openhour(id):
     credentials = google.oauth2.credentials.Credentials(**session['credentials'])
     service = googleapiclient.discovery.build('calendar', 'v3', credentials=credentials)
@@ -214,6 +218,7 @@ def post_openhour(id):
     return redirect(url_for('openhours.index'))
 
 @openhours_blueprint.route('/<string:id>/notes/new', methods=['GET', 'POST'])
+@user_logged_in
 def new_notes(id):
     form = NoteForm(request.form)
     form.author.choices = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.all()]
@@ -264,6 +269,7 @@ def new_notes(id):
     return render_template('notes_form.html', form=form)
 
 @openhours_blueprint.route('/<string:id>/notes')
+@admin_logged_in
 def notes(id):
     openhour = Openhour.query.get(id)
     notes = openhour.notes[0]
@@ -272,13 +278,42 @@ def notes(id):
     return render_template('notes.html', notes=notes, openhour=openhour, author=author)
 
 @openhours_blueprint.route('/<string:id>/shopping_email')
+@admin_logged_in
 def shopping_email(id):
     print('sending a shopping email')
 
+    openhour = Openhour.query.get(id)
+    shopping_list = openhour.notes.shopping
+
+    volunteer_list = []
+    emails_list = [ADMIN_EMAIL]
+    for volunteer in openhour.volunteers:
+        volunteer_list.append(volunteer.name.split()[0])
+        emails_list.append(volunteer.email)
+
+    shopper_list = []
+    for shopper in openhour.shoppers:
+        shopper_list.append(shopper.name.split()[0])
+        emails_list.append(shopper.email)
+
+
+    # Create a comma separated list with and between the lastt two names
+    volunteers = ' and'.join(', '.join(volunteer_list).rsplit(',',1))
+    shoppers = ' and'.join(', '.join(shopper_list).rsplit(',',1))
+    emails = ', '.join(emails_list)
+
+    sender = ADMIN_EMAIL
+    to = emails
+    subject = 'Food Bank Shopping ... %s ' % openhour.date.strftime('%b %d')
+    msgHtml = render_template('shopping_email.html', volunteers=volunteers, shoppers=shoppers, shopping_list=shopping_list)
+    msgPlain = render_template('shopping_email.txt', volunteers=volunteers, shoppers=shoppers, shopping_list=shopping_list)
+
+    SendMessage(sender, to, subject, msgHtml, msgPlain)
+
     return redirect(url_for('index'))
 
-
 @openhours_blueprint.route('/signup_email', methods=['GET', 'POST'])
+@admin_logged_in
 def signup_email():
     mondays = []
     now = datetime.datetime.now()
