@@ -22,3 +22,11 @@
   padding: 20px 10px;
   margin-top: -60px;
 }
+
+.menu-center {
+  text-align: center;
+}
+
+.menu-center .btn {
+  margin-bottom: 20px;
+}
