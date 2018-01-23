@@ -15,7 +15,6 @@ import google.oauth2.credentials
 import datetime
 import calendar
 
-
 ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
 
 openhours_blueprint = Blueprint('openhours', __name__, template_folder='templates')
@@ -29,33 +28,6 @@ def index():
     else:
         msg = 'No Open Hours Found'
         return render_template('openhours.html', msg=msg)
-
-@openhours_blueprint.route('/signup_email', methods=['GET', 'POST'])
-def signup_email():
-    mondays = []
-    now = datetime.datetime.now()
-    monday = now + relativedelta(months=+1, day=1, weekday=MO(1))
-    month = monday.month
-    while monday.month == month:
-        mondays.append(monday.strftime('%B %d'))
-        monday += timedelta(days = 7)
-
-    emails = [ADMIN_EMAIL]
-    volunteers = Volunteer.query.filter(Volunteer.active == True, Volunteer.role != 'shopper')
-    for volunteer in volunteers:
-        emails.append(volunteer.email)
-
-    sender = ADMIN_EMAIL
-    to = ', '.join(emails)
-    subject = 'Food Bank ... %s ' % month
-    msgHtml = render_template('signup_email.html', mondays=mondays, month=calendar.month_name[month])
-    msgPlain = render_template('signup_email.txt', mondays=mondays, month=calendar.month_name[month])
-
-    SendMessage(sender, to, subject, msgHtml, msgPlain)
-
-    flash('Email sent for Signups in %s. ' % calendar.month_name[month], 'success')
-
-    return render_template('index.html')
 
 @openhours_blueprint.route('/new', methods=['GET', 'POST'])
 # @admin_logged_in
@@ -91,6 +63,13 @@ def new_openhour():
         return redirect(url_for('openhours.index'))
 
     return render_template('openhour_form.html', form=form)
+
+@openhours_blueprint.route('/<string:id>')
+def show_openhour(id):
+    openhour = Openhour.query.get(id)
+
+    return render_template('openhour.html', openhour = openhour)
+
 
 @openhours_blueprint.route('/<string:id>/edit', methods=['GET', 'POST'])
 # @admin_logged_in
@@ -290,3 +269,37 @@ def notes(id):
     author = Volunteer.query.get(notes.author)
 
     return render_template('notes.html', notes=notes, openhour=openhour, author=author)
+
+@openhours_blueprint.route('/<string:id>/shopping_email')
+def shopping_email(id):
+    print('sending a shopping email')
+
+    return redirect(url_for('index'))
+
+
+@openhours_blueprint.route('/signup_email', methods=['GET', 'POST'])
+def signup_email():
+    mondays = []
+    now = datetime.datetime.now()
+    monday = now + relativedelta(months=+1, day=1, weekday=MO(1))
+    month = monday.month
+    while monday.month == month:
+        mondays.append(monday.strftime('%B %d'))
+        monday += timedelta(days = 7)
+
+    emails = [ADMIN_EMAIL]
+    volunteers = Volunteer.query.filter(Volunteer.active == True, Volunteer.role != 'shopper')
+    for volunteer in volunteers:
+        emails.append(volunteer.email)
+
+    sender = ADMIN_EMAIL
+    to = ', '.join(emails)
+    subject = 'Food Bank ... %s ' % month
+    msgHtml = render_template('signup_email.html', mondays=mondays, month=calendar.month_name[month])
+    msgPlain = render_template('signup_email.txt', mondays=mondays, month=calendar.month_name[month])
+
+    SendMessage(sender, to, subject, msgHtml, msgPlain)
+
+    flash('Email sent for Signups in %s. ' % calendar.month_name[month], 'success')
+
+    return render_template('index.html')

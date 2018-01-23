@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>{{ openhour.date.strftime('%B %d, %Y') }}</h1>
+  <hr>
+  <div class="">
+    <a class="btn btn-success" href="{{openhour.id}}/edit">Edit</a>
+    {% if openhour.posted == False %}
+      <a class="btn btn-info" href="{{openhour.id}}/post">POST</a>
+    {% else %}
+      <a class="btn btn-danger" href="{{openhour.id}}/post">Re-POST</a>
+    {% endif %}
+    <a class="btn btn-info" href="{{openhour.id}}/reminder_email">Send Reminder Email</a>
+    <a class="btn btn-info" href="{{openhour.id}}/shopping_email">Send Shopping List</a>
+  </div>
+  <hr>
+  
+  <h5>Volunteers:</h5>
+  <p>
+    {% for volunteer in openhour.volunteers %}
+      <span> {{volunteer.name}}{{ "," if not loop.last }}</span>
+    {% endfor %}
+  </p>
+  <h5>Shoppers:</h5>
+    {% for shopper in openhour.shoppers %}
+      <span>{{shopper.name}}{{ "," if not loop.last }}</span>
+    {% endfor %}
+  <hr>
+  <div class="">
+    {% if openhour.notes %}
+      <p>Notes: {{ openhour.notes.body | safe }}</p>
+      <p>Shopping List: {{ openhour.notes.shopping
+      | safe }}</p>
+    {% else %}
+      <p>Notes: No Notes Recorded</p>
+      <p>Shopping List: No Shopping List Recorded</p>
+    {% endif %}
+  </div>
+{% endblock %}

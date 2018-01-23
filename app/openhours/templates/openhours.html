@@ -2,21 +2,20 @@
 
 {% block body %}
   <h1>Open Hours</h1>
-  <hr>
   <table class="table table-striped">
     <tr>
       <th>Date</th>
       <!-- <th>Author</th> -->
       <th>Volunteers</th>
       <th>Shoppers</th>
-      <th>Notes</th>
+      <!-- <th>Notes</th>
       <th></th>
       <th></th>
-      <th></th>
+      <th></th> -->
     </tr>
     {% for openhour in openhours %}
       <tr>
-        <td>{{ openhour.date.strftime('%m/%d/%Y') }}</td>
+        <td><a href="{{openhour.id}}">{{ openhour.date.strftime('%m/%d/%y') }}</a></td>
         <td>
           {% for volunteer in openhour.volunteers %}
             <span> {{volunteer.name}}{{ "," if not loop.last }}</span>
@@ -27,7 +26,7 @@
             <span>{{shopper.name}}{{ "," if not loop.last }}</span>
           {% endfor %}
         </td>
-        {% if openhour.notes %}
+        <!-- {% if openhour.notes %}
           <td><ahref="{{openhour.id}}/notes">View Notes</a></td>
         {% else %}
           <td><a class="btn btn-default" href="{{openhour.id}}/notes/new">Add Notes</a></td>
@@ -38,8 +37,8 @@
         {% else %}
           <td><a class="btn btn-danger" href="{{openhour.id}}/post">Re-POST</a></td>
         {% endif %}
-        <td><a class="btn btn-info" href="{{openhour.id}}/reminder_email">Send Reminder Email</a></td>
-      </tr>
+        <td><a class="btn btn-info" href="{{openhour.id}}/reminder_email">Send Reminder Email</a></td> -->
+    </tr>
     {% endfor %}
 
   </table>
