@@ -22,7 +22,7 @@ def index():
             flash('Status of %s changed to Inactive' % volunteer.name, 'success')
 
         db.session.commit()
-        return redirect(url_for('volunteers.volunteers'))
+        return redirect(url_for('volunteers.index'))
 
     elif request.method == 'GET':
         volunteers = Volunteer.query.order_by(Volunteer.name.asc()).all()
