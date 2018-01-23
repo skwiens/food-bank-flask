@@ -21,7 +21,8 @@ openhours_blueprint = Blueprint('openhours', __name__, template_folder='template
 
 @openhours_blueprint.route('/')
 def index():
-    openhours = Openhour.query.all()
+    # openhours = Openhour.query.all()
+    openhours = Openhour.query.order_by(Openhour.date.desc()).all()
 
     if openhours:
         return render_template('openhours.html', openhours=openhours)
