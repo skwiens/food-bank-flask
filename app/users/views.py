@@ -1,11 +1,13 @@
 #app/users/views/py
 
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
-from app.models import User
+from app.models import User, Openhour, Volunteer
 from app.forms import UserForm
 from app import db
 
 from app.errors import *
+
+import datetime
 
 users_blueprint = Blueprint('users', __name__, template_folder='templates')
 
@@ -82,3 +84,19 @@ def user_login():
             return render_template('user_login.html', error=error)
 
     return render_template('user_login.html')
+
+@users_blueprint.route('/home')
+def home():
+    return render_template('home.html')
+
+# @users_blueprint.route('/signup')
+# def signup():
+#     form = SignupForm(request.form)
+#
+#     form.volunteers.choices = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role != 'shopper').all()]
+#
+#     if request.method == 'POST':
+#         volunteer = form.volunteer.data
+#         openhour_id = request.form['id']
+#
+#     return render_template('signup.html')

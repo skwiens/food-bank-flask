@@ -1,3 +1,4 @@
+#app/views.py
 from flask import render_template, session, flash, redirect, url_for, request
 from app import app
 from app.oauth_helpers import *
@@ -31,7 +32,6 @@ def admin_login():
             flash('You do not have admin privileges, please contact Bethany Food Bank if you have any questions', 'danger')
     else:
         flash('Sorry! Something went wrong. Please try again in a few moments', 'danger')
-
 
     return redirect(url_for('index'))
 

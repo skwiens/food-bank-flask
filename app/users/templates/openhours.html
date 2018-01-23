@@ -5,13 +5,9 @@
   <table class="table table-striped">
     <tr>
       <th>Date</th>
-      <!-- <th>Author</th> -->
       <th>Volunteers</th>
       <th>Shoppers</th>
-      <!-- <th>Notes</th>
-      <th></th>
-      <th></th>
-      <th></th> -->
+      <th>Notes</th>
     </tr>
     {% for openhour in openhours %}
       <tr>
@@ -26,18 +22,11 @@
             <span>{{shopper.name}}{{ "," if not loop.last }}</span>
           {% endfor %}
         </td>
-        <!-- {% if openhour.notes %}
-          <td><ahref="{{openhour.id}}/notes">View Notes</a></td>
+        {% if openhour.notes %}
+          <td>Notes Already Left</a></td>
         {% else %}
-          <td><a class="btn btn-default" href="{{openhour.id}}/notes/new">Add Notes</a></td>
+          <td><a class="btn btn-default" href="openhours/{{openhour.id}}/notes/new">Add Notes</a></td>
         {% endif %}
-        <td><a class="btn btn-success" href="{{openhour.id}}/edit">Edit</a></td>
-        {% if openhour.posted == False %}
-          <td><a class="btn btn-info" href="{{openhour.id}}/post">POST</a></td>
-        {% else %}
-          <td><a class="btn btn-danger" href="{{openhour.id}}/post">Re-POST</a></td>
-        {% endif %}
-        <td><a class="btn btn-info" href="{{openhour.id}}/reminder_email">Send Reminder Email</a></td> -->
     </tr>
   {% endfor %}
 

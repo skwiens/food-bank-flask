@@ -10,7 +10,6 @@ volunteers_blueprint = Blueprint('volunteers', __name__, template_folder='templa
 @volunteers_blueprint.route('/', methods=['GET', 'POST'])
 def volunteers():
     if request.method == 'POST':
-        print('receiving post')
         volid = request.form['id']
         volunteer = Volunteer.query.get(volid)
         if request.form['submit'] == 'Mark Active':
