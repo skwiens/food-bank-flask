@@ -24,7 +24,7 @@ class NoteForm(Form):
     author = SelectField('Name', coerce=int)
     customers = IntegerField('Number of Customers')
     body = TextAreaField('Notes')
-    shopping = TextAreaField('Shopping List')
+    shopping = TextAreaField('Shopping List', [validators.DataRequired()])
 
 class UserForm(Form):
     username = StringField('Username', [validators.Length(min=1, max=50)])

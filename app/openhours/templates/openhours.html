@@ -1,10 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-  <h1>Open Hours</h1>
-    {% if session.admin %}
-      <button><a href="{{url_for('openhours.signup_email')}}">Send Signup Email for {{ next_month }}</a></button>
-    {% endif %}
+  <div class="header-inline">
+    <h1>Open Hours</h1>
+      {% if session.admin %}
+        <a class="btn btn-info" href="{{url_for('openhours.signup_email')}}">Send Signup Email for {{ next_month }}</a>
+      {% endif %}
+  </div>
   <table class="table table-striped">
     <tr>
       <th>Date</th>

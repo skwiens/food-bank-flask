@@ -14,7 +14,7 @@
     <a class="btn btn-info" href="{{openhour.id}}/shopping_email">Send Shopping List</a>
   </div>
   <hr>
-  
+
   <h5>Volunteers:</h5>
   <p>
     {% for volunteer in openhour.volunteers %}
@@ -28,12 +28,10 @@
   <hr>
   <div class="">
     {% if openhour.notes %}
-      <p>Notes: {{ openhour.notes.body | safe }}</p>
-      <p>Shopping List: {{ openhour.notes.shopping
+      <p>Customers: {{ notes.customers }}</p>
+      <p>Notes: {{ notes.body | safe }}</p>
+      <p>Shopping List: {{ notes.shopping
       | safe }}</p>
-    {% else %}
-      <p>Notes: No Notes Recorded</p>
-      <p>Shopping List: No Shopping List Recorded</p>
     {% endif %}
   </div>
 {% endblock %}

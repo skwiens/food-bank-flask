@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <title>Bethany Food Bank</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- <link rel="stylesheet" href="../static/style.css" type="text/css"> -->
   </head>
   <body>
     {% include 'includes/_navbar.html' %}
@@ -12,7 +15,6 @@
       {% include 'includes/_messages.html' %}
       {% block body %}{% endblock %}
     </div>
-
 
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->

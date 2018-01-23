@@ -1,18 +1,20 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-  <h1>Details for an Open Hours Night:</h1>
-  {% from "includes/_formhelpers.html" import render_field %}
-  <form action= "" method="post">
-    <div class="form-group">
-      {{ render_field(form.date, class_="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ render_field(form.volunteers, class_="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ render_field(form.shoppers, class_="form-control") }}
-    </div>
-    <p><input type="submit" class="btn btn-primary" value="Submit"></p>
-  </form>
+  <div class="form">
+    <h2>Details for an Open Hours Night:</h2>
+    {% from "includes/_formhelpers.html" import render_field %}
+    <form action= "" method="post">
+      <div class="form-group">
+        {{ render_field(form.date, class_="form-control") }}
+      </div>
+      <div class="form-group">
+        {{ render_field(form.volunteers, class_="form-control") }}
+      </div>
+      <div class="form-group">
+        {{ render_field(form.shoppers, class_="form-control") }}
+      </div>
+      <p><input type="submit" class="btn btn-primary" value="Submit"></p>
+    </form>
+  </div>
 {% endblock %}

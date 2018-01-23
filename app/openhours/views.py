@@ -74,8 +74,13 @@ def new_openhour():
 def show_openhour(id):
     openhour = Openhour.query.get(id)
 
-    return render_template('openhour.html', openhour = openhour)
 
+    if openhour.notes:
+        notes = openhour.notes[0]
+    else:
+        notes = False
+
+    return render_template('openhour.html', openhour=openhour, notes=notes)
 
 @openhours_blueprint.route('/<string:id>/edit', methods=['GET', 'POST'])
 @admin_logged_in
@@ -273,14 +278,14 @@ def new_notes(id):
 
     return render_template('notes_form.html', form=form)
 
-@openhours_blueprint.route('/<string:id>/notes')
-@admin_logged_in
-def notes(id):
-    openhour = Openhour.query.get(id)
-    notes = openhour.notes[0]
-    author = Volunteer.query.get(notes.author)
-
-    return render_template('notes.html', notes=notes, openhour=openhour, author=author)
+# @openhours_blueprint.route('/<string:id>/notes')
+# @admin_logged_in
+# def notes(id):
+#     openhour = Openhour.query.get(id)
+#     notes = openhour.notes[0]
+#     author = Volunteer.query.get(notes.author)
+#
+#     return render_template('notes.html', notes=notes, openhour=openhour, author=author)
 
 @openhours_blueprint.route('/<string:id>/shopping_email')
 @admin_logged_in

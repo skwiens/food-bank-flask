@@ -1,0 +1,24 @@
+.form {
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+.form h1 {
+  font-size: 32px;
+}
+
+.form .btn-primary {
+  width: 100%;
+}
+
+.header-inline {
+  width: 100%;
+  display: inline-block;
+  padding-bottom: 20px;
+}
+
+.header-inline a {
+  float: right;
+  padding: 20px 10px;
+  margin-top: -60px;
+}
