@@ -293,7 +293,7 @@ def shopping_email(id):
     print('sending a shopping email')
 
     openhour = Openhour.query.get(id)
-    shopping_list = openhour.notes.shopping
+    shopping_list = openhour.notes[0].shopping
 
     volunteer_list = []
     emails_list = [ADMIN_EMAIL]
