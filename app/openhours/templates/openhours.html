@@ -16,7 +16,7 @@
       <th>Shoppers</th>
       <th></th>
     </tr>
-    {% for openhour in openhours %}
+    {% for openhour in openhours.items %}
       <tr>
         {% if (session.user) and (session.user=='admin') %}
           <td><a href="{{url_for('openhours.show_openhour', id=openhour.id)}}">{{ openhour.date.strftime('%m/%d/%y') }}</a></td>
@@ -40,7 +40,27 @@
         {% endif %}
     </tr>
   {% endfor %}
-
   </table>
+
+  <div class="pag-nav">
+    {% if openhours.has_prev %}
+      <a href="{{ url_for('openhours.openhours_pag', page_num=openhours.prev_num) }}">&lt;&lt; Newer </a>
+    {% else %}
+      &lt;&lt; Newer
+    {% endif %}
+     |
+    {% if openhours.has_next %}
+      <a href="{{ url_for('openhours.openhours_pag', page_num=openhours.next_num) }}">Older &gt;&gt;</a>
+    {% else %}
+      Older &gt;&gt;
+    {% endif %}
+  </div>
+
+
+  <!-- {% for page in openhours.iter_pages() %}
+    {% if page %}
+      <a class="pag-nav" href="{{url_for('openhours.openhours_pag', page_num=page)}}">{{ page }}</a>
+    {% endif %}
+  {% endfor %} -->
 
 {% endblock %}

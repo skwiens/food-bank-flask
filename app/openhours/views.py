@@ -29,7 +29,8 @@ def index():
     next_month = calendar.month_name[(datetime.datetime.now() + relativedelta(months=+1)).month]
 
     if openhours:
-        return render_template('openhours.html', openhours=openhours, next_month=next_month)
+        return redirect(url_for('openhours.openhours_pag', page_num=1))
+        # return render_template('openhours.html', openhours=openhours, next_month=next_month)
     else:
         msg = 'No Open Hours Found'
         return render_template('openhours.html', msg=msg, next_month=next_month)
@@ -255,15 +256,6 @@ def new_notes(id):
 
     return render_template('notes_form.html', form=form)
 
-# @openhours_blueprint.route('/<string:id>/notes')
-# @admin_logged_in
-# def notes(id):
-#     openhour = Openhour.query.get(id)
-#     notes = openhour.notes[0]
-#     author = Volunteer.query.get(notes.author)
-#
-#     return render_template('notes.html', notes=notes, openhour=openhour, author=author)
-
 @openhours_blueprint.route('/<string:id>/shopping_email')
 @admin_logged_in
 def shopping_email(id):
@@ -335,3 +327,11 @@ def signup_email():
         flash('Email sent for Signups in %s. ' % calendar.month_name[month], 'success')
 
     return render_template('index.html')
+
+@openhours_blueprint.route('/list/<int:page_num>')
+def openhours_pag(page_num):
+    openhours = Openhour.query.order_by(Openhour.date.desc()).paginate(per_page=24, page=page_num, error_out=True)
+
+    next_month = calendar.month_name[(datetime.datetime.now() + relativedelta(months=+1)).month]
+
+    return render_template('openhours.html', openhours=openhours, next_month=next_month)
