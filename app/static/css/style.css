@@ -23,7 +23,6 @@
 }
 
 .header-inline a{
-  /*float: right;*/
   padding: 15px 10px;
   margin-top: -60px;
 }
@@ -39,3 +38,9 @@
 .menu-center .btn {
   margin-bottom: 20px;
 }
+
+/*@media screen and (min-width: 650px) {
+  .header-inline {
+    display: block;
+  }
+}*/

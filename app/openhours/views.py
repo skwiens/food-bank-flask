@@ -311,15 +311,16 @@ def signup_email():
     monday = now + relativedelta(months=+1, day=1, weekday=MO(1))
     month = monday.month
     while monday.month == month:
+        new_openhour = Openhour(date=monday, posted=False)
+        db.session.add(new_openhour)
         mondays.append(monday.strftime('%B %d'))
         monday += timedelta(days = 7)
 
+    db.session.commit()
     emails = [ADMIN_EMAIL]
     volunteers = Volunteer.query.filter(Volunteer.active == True, Volunteer.role != 'shopper')
     for volunteer in volunteers:
         emails.append(volunteer.email)
-
-    print(emails)
 
     sender = ADMIN_EMAIL
     to = ', '.join(emails)
