@@ -249,29 +249,6 @@ def new_notes(id):
         db.session.add(new_note)
         db.session.commit()
 
-        # volunteer_list = []
-        # shopper_list = []
-        # emails = [ADMIN_EMAIL]
-        #
-        # for volunteer in openhour.volunteers:
-        #     emails.append(volunteer.email)
-        #     volunteer_list.append(volunteer.name.split()[0])
-        #
-        # for shopper in openhour.shoppers:
-        #     emails.append(shopper.email)
-        #     shopper_list.append(shopper.name.split()[0])
-        #
-        # volunteers = ", ".join(volunteer_list)
-        # shoppers = ', '.join(shopper_list)
-        #
-        # sender = ADMIN_EMAIL
-        # subject = ' Shopping for Open Hour: ' + openhour.date.strftime('%m/%d/%Y')
-        # msgHtml = render_template('shopping_email.html', shoppers=shoppers, volunteers=volunteers, shopping_list=shopping_list)
-        # msgPlain = render_template('shopping_email.txt', shoppers=shoppers, volunteers=volunteers, shopping_list=shopping_list)
-        # to = ', '.join(emails)
-        #
-        # SendMessage(sender, to, subject, msgHtml, msgPlain)
-        #
         flash('Notes created for %s. Thank you for volunteering tonight!' % openhour.date.strftime('%B %d'), 'success')
 
         return redirect(url_for('index'))
@@ -320,7 +297,9 @@ def shopping_email(id):
 
     SendMessage(sender, to, subject, msgHtml, msgPlain)
 
-    return redirect(url_for('index'))
+    flash('Shopping List email sent for %s. ' % openhour.date.strftime('%b %d'), 'success')
+
+    return redirect(url_for('openhours.index'))
 
 @openhours_blueprint.route('/signup_email', methods=['GET', 'POST'])
 @admin_logged_in

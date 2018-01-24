@@ -1,14 +1,20 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-  <div class="header-inline">
-    <h1>Open Hours</h1>
-      {% if session.admin %}
-        <div class="">
-          <a class="btn btn-info" href="{{url_for('openhours.signup_email')}}">Send Signup Email for {{ next_month }}</a>
-        </div>
-      {% endif %}
+<div class="header-inline">
+  <h1>{{ volunteer.name }}<small> | {{ volunteer.email }} </small></h1>
+  <div>
+    {% if volunteer.active == True %}
+      <a class="btn btn-primary" href="{{url_for('volunteers.change_status', id=volunteer.id)}}">Mark Inactive</a>
+    {% else %}
+      <a class="btn btn-primary" href="{{url_for('volunteers.change_status', id=volunteer.id)}}">Mark Active</a>
+    {% endif %}
+    <a class="btn btn-success" href="{{url_for('volunteers.edit_volunteer', id=volunteer.id)}}">Edit</a>
   </div>
+</div>
+
+
+</div>
   <table class="table table-striped">
     <tr>
       <th>Date</th>
@@ -18,7 +24,7 @@
     </tr>
     {% for openhour in openhours %}
       <tr>
-        <td><a href="{{openhour.id}}">{{ openhour.date.strftime('%m/%d/%y') }}</a></td>
+        <td><a href="{{url_for('openhours.show_openhour', id=openhour.id)}}">{{ openhour.date.strftime('%m/%d/%y') }}</a></td>
         <td>
           {% for volunteer in openhour.volunteers %}
             <span> {{volunteer.name}}{{ "," if not loop.last }}</span>

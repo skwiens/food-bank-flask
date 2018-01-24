@@ -1,35 +1,40 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-  <h1>Volunteers</h1>
+  <!-- <h1>Volunteers</h1> -->
   <a href="{{url_for('volunteers.new_volunteer')}}"></a>
   <hr>
+  <h2>Active Volunteers</h2>
   <table class="table table-striped">
     <tr>
       <th>Name</th>
       <th>Email</th>
       <th>Role</th>
-      <th></th>
-      <th></th>
     </tr>
-    {% for volunteer in volunteers %}
+    {% for volunteer in active_vol %}
       <tr>
-        <td>{{ volunteer.name }}</td>
+        <td><a href="{{url_for('volunteers.show_volunteer', id=volunteer.id)}}">{{ volunteer.name }}</a></td>
         <td>{{ volunteer.email }}</td>
         <td>{{ volunteer.role }}</td>
-        <td><a class="btn btn-info" href="{{volunteer.id}}/edit">Edit</a></td>
-        <td>
-          <form action="" method="POST">
-            {% if volunteer.active == True %}
-              <input type="hidden" name="id" value={{volunteer.id}}>
-              <input class="btn btn-primary" type="submit" name="submit" value="Mark Inactive" data={{volunteer.id}}/>
-            {% else %}
-              <input type="hidden" name="id" value={{volunteer.id}}>
-              <input class="btn btn-primary" type="submit" name="submit" value="Mark Active" data={{volunteer.id}}/>
-            {% endif %}
-          </form>
-        </td>
       </tr>
+    {% endfor %}
+  </table>
+
+  <h2>Inactive Volunteers</h2>
+  <table class="table table-striped">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Role</th>
+      <!-- <th></th> -->
+      <!-- <th></th> -->
+    </tr>
+    {% for volunteer in inactive_vol %}
+    <tr>
+      <td><a href="{{url_for('volunteers.show_volunteer', id=volunteer.id)}}">{{ volunteer.name }}</a></td>
+      <td>{{ volunteer.email }}</td>
+      <td>{{ volunteer.role }}</td>
+    </tr>
     {% endfor %}
 
   </table>

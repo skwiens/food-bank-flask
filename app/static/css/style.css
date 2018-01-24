@@ -3,6 +3,11 @@
   margin: 0 auto;
 }
 
+.table {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
 .form h1 {
   font-size: 32px;
 }
@@ -17,10 +22,14 @@
   padding-bottom: 20px;
 }
 
-.header-inline a {
-  float: right;
-  padding: 20px 10px;
+.header-inline a{
+  /*float: right;*/
+  padding: 15px 10px;
   margin-top: -60px;
+}
+
+.header-inline div {
+  float: right;
 }
 
 .menu-center {

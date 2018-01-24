@@ -10,6 +10,6 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
 
-@app.errorhandler(403)
+@app.errorhandler(405)
 def error405(error):
-    return render_template('403.html'), 403
+    return render_template('405.html'), 403
