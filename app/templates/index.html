@@ -9,8 +9,8 @@
 
     <hr>
     {% if session.logged_in == NULL %}
-      <a href="/users/login" class="btn btn-primary btn-lg">Volunteer Login</a>
-      <a href="/admin_login" class="btn btn-success btn-lg">Admin Login</a>
+      <a href="{{url_for('users.user_login')}}" class="btn btn-primary btn-lg">Volunteer Login</a>
+      <a href="{{url_for('admin_login')}}" class="btn btn-success btn-lg">Admin Login</a>
     {% endif %}
   </div>
 {% endblock %}

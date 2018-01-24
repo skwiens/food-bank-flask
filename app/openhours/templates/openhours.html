@@ -18,7 +18,8 @@
     </tr>
     {% for openhour in openhours %}
       <tr>
-        <td><a href="{{openhour.id}}">{{ openhour.date.strftime('%m/%d/%y') }}</a></td>
+        <td><a href="{{url_for('openhours.show_openhour', id=openhour.id)}}">{{ openhour.date.strftime('%m/%d/%y') }}</a></td>
+        <!-- <td><a href="{{openhour.id}}">{{ openhour.date.strftime('%m/%d/%y') }}</a></td> -->
         <td>
           {% for volunteer in openhour.volunteers %}
             <span> {{volunteer.name}}{{ "," if not loop.last }}</span>

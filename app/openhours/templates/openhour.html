@@ -5,21 +5,18 @@
   <hr>
     <div class="form">
       <div class="menu-center">
-        <a class="btn btn-success" href="{{openhour.id}}/edit">Edit</a>
+        <a class="btn btn-success" href="{{url_for('openhours.edit_openhour', id=openhour.id)}}">Edit</a>
         {% if openhour.posted == False %}
-          <a class="btn btn-info" href="{{openhour.id}}/post">POST</a>
+          <a class="btn btn-info" href="{{url_for('openhours.post_openhour', id=openhour.id)}}">POST</a>
         {% else %}
-          <a class="btn btn-danger" href="{{openhour.id}}/post">Re-POST</a>
+          <a class="btn btn-danger" href="{{url_for('openhours.post_openhour', id=openhour.id)}}">Re-POST</a>
         {% endif %}
-        <a class="btn btn-info" href="{{openhour.id}}/reminder_email">Send Reminder Email</a>
-        <a class="btn btn-info" href="{{openhour.id}}/shopping_email">Send Shopping List</a>
+        <a class="btn btn-info" href="{{url_for('openhours.reminder_email', id=openhour.id)}}">Send Reminder Email</a>
+        <a class="btn btn-info" href="{{url_for('openhours.shopping_email', id=openhour.id)}}">Send Shopping List</a>
       </div>
-
       <table class="table table-striped">
         <tr>
-          <th>
-            Volunteeers
-          </th>
+          <th>Volunteeers</th>
           <td>
             {% for volunteer in openhour.volunteers %}
               {{volunteer.name}}{{ "," if not loop.last }}
@@ -27,9 +24,7 @@
           </td>
         </tr>
         <tr>
-          <th>
-            Shoppers
-          </th>
+          <th>Shoppers</th>
           <td>
             {% for shopper in openhour.shoppers %}
               {{shopper.name}}{{ "," if not loop.last }}
@@ -38,23 +33,17 @@
         </tr>
         {% if openhour.notes %}
           <tr>
-            <th>
-              Customers
-            </th>
+            <th>Customers</th>
             <td>
               {{ notes.customers }}
             </td>
           </tr>
           <tr>
-            <th>
-              Notes
-            </th>
+            <th>Notes</th>
             <td>{{ notes.body | safe }}</td>
           </tr>
           <tr>
-            <th>
-              Shopping List
-            </th>
+            <th>Shopping List</th>
             <td>{{ notes.shopping | safe }}</td>
           </tr>
           {% endif %}

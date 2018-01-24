@@ -28,8 +28,8 @@
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">Volunteers <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="/volunteers/new">Add Volunteer</a></li>
-                <li><a href="/volunteers">View Volunteers</a></li>
+                <li><a href="{{url_for('volunteers.new_volunteer')}}">Add Volunteer</a></li>
+                <li><a href="{{url_for('volunteers.index')}}">View Volunteers</a></li>
               </ul>
             </li>
             <li><a href="{{url_for('users.edit_user')}}">Login Info</a></li>
@@ -41,9 +41,9 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         {% if session.user %}
-          <li><a href="/logout">Logout</a></li>
+          <li><a href="{{url_for('logout')}}">Logout</a></li>
         {% else %}
-          <li><a href="/users/login">Login</a></li>
+          <li><a href="{{url_for('users.user_login')}}">Login</a></li>
         {% endif %}
       </ul>
     </div>
