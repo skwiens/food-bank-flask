@@ -5,7 +5,7 @@
     <h1>Open Hours</h1>
       {% if session.admin %}
         <div class="">
-          <a class="btn btn-info" href="{{url_for('openhours.signup_email')}}">Send Signup Email for {{ next_month }}</a>
+          <a class="btn btn-primary" href="{{url_for('openhours.signup_email')}}">Send Signup Email for {{ next_month }}</a>
         </div>
       {% endif %}
   </div>
@@ -18,8 +18,11 @@
     </tr>
     {% for openhour in openhours %}
       <tr>
-        <td><a href="{{url_for('openhours.show_openhour', id=openhour.id)}}">{{ openhour.date.strftime('%m/%d/%y') }}</a></td>
-        <!-- <td><a href="{{openhour.id}}">{{ openhour.date.strftime('%m/%d/%y') }}</a></td> -->
+        {% if (session.user) and (session.user=='admin') %}
+          <td><a href="{{url_for('openhours.show_openhour', id=openhour.id)}}">{{ openhour.date.strftime('%m/%d/%y') }}</a></td>
+        {% else %}
+          <td>{{ openhour.date.strftime('%m/%d/%y') }}</td>
+        {% endif %}
         <td>
           {% for volunteer in openhour.volunteers %}
             <span> {{volunteer.name}}{{ "," if not loop.last }}</span>

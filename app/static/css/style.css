@@ -19,7 +19,7 @@
 .header-inline {
   width: 100%;
   display: inline-block;
-  padding-bottom: 20px;
+  padding-bottom: 30px;
 }
 
 .header-inline a{
@@ -39,8 +39,16 @@
   margin-bottom: 20px;
 }
 
-/*@media screen and (min-width: 650px) {
+@media screen and (max-width: 700px) {
   .header-inline {
     display: block;
+    text-align: center;
   }
-}*/
+  .header-inline a{
+    margin-top: 0;
+  }
+  .header-inline div {
+    padding-top: 15px;
+    float: none;
+  }
+}

@@ -3,10 +3,6 @@
 {% block body %}
   <div class="jumbotron text-center">
     <h1>Bethany Food Bank Volunteer App</h1>
-    <!-- <p class="lead">
-      You can do anything your heart can imagine. Let's give him a friend too. Everybody needs a friend. We can always carry this a step further. There's really no end to this.
-    </p> -->
-
     <hr>
     {% if session.logged_in == NULL %}
       <a href="{{url_for('users.user_login')}}" class="btn btn-primary btn-lg">Volunteer Login</a>

@@ -1,10 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-  <!-- <h1>Volunteers</h1> -->
-  <a href="{{url_for('volunteers.new_volunteer')}}"></a>
-  <hr>
-  <h2>Active Volunteers</h2>
+  <div class="header-inline">
+    <h2>Active Volunteers</h2>
+    <div class="">
+      <a class="btn btn-primary" href="{{url_for('volunteers.new_volunteer')}}">New Volunteer</a>
+    </div>
+  </div>
   <table class="table table-striped">
     <tr>
       <th>Name</th>
