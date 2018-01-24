@@ -41,7 +41,6 @@
     </tr>
   {% endfor %}
   </table>
-
   <div class="pag-nav">
     {% if openhours.has_prev %}
       <a href="{{ url_for('openhours.openhours_pag', page_num=openhours.prev_num) }}">&lt;&lt; Newer </a>
@@ -55,12 +54,4 @@
       Older &gt;&gt;
     {% endif %}
   </div>
-
-
-  <!-- {% for page in openhours.iter_pages() %}
-    {% if page %}
-      <a class="pag-nav" href="{{url_for('openhours.openhours_pag', page_num=page)}}">{{ page }}</a>
-    {% endif %}
-  {% endfor %} -->
-
 {% endblock %}

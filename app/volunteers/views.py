@@ -12,20 +12,6 @@ volunteers_blueprint = Blueprint('volunteers', __name__, template_folder='templa
 @volunteers_blueprint.route('/')
 @admin_logged_in
 def index():
-    # if request.method == 'POST':
-    #     volid = request.form['id']
-    #     volunteer = Volunteer.query.get(volid)
-    #     if request.form['submit'] == 'Mark Active':
-    #         volunteer.active = True
-    #         flash('Volunteer %s status changed to Active' % volunteer.name, 'success')
-    #     elif request.form['submit'] == 'Mark Inactive':
-    #         volunteer.active = False
-    #         flash('Status of %s changed to Inactive' % volunteer.name, 'success')
-    #
-    #     db.session.commit()
-    #     return redirect(url_for('volunteers.index'))
-
-    # elif request.method == 'GET':
     active_vol = Volunteer.query.filter_by(active=True).order_by(Volunteer.name.asc())
     inactive_vol = Volunteer.query.filter_by(active=False).order_by(Volunteer.name.asc())
     if active_vol or inactive_vol:

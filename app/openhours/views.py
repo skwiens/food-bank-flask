@@ -23,7 +23,6 @@ openhours_blueprint = Blueprint('openhours', __name__, template_folder='template
 @openhours_blueprint.route('/')
 @user_logged_in
 def index():
-    # openhours = Openhour.query.all()
     openhours = Openhour.query.order_by(Openhour.date.desc()).all()
 
     next_month = calendar.month_name[(datetime.datetime.now() + relativedelta(months=+1)).month]
@@ -40,12 +39,11 @@ def index():
 def new_openhour():
     form = OpenhourForm(request.form)
 
-    # Dynamically create a list of volunteers to select for the openhour
-    volunteer_list = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role != 'shopper').all()]
+    volunteer_list = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role!='shopper', Volunteer.active==True).order_by(Volunteer.name.asc())]
     form.volunteers.choices = volunteer_list
     form.volunteers.choices.insert(0, (-1, 'None'))
 
-    shopper_list = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role != 'open-hours').all()]
+    shopper_list = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role != 'open-hours', Volunteer.active==True).order_by(Volunteer.name.asc())]
     form.shoppers.choices = shopper_list
     form.shoppers.choices.insert(0, (-1, 'None'))
 
