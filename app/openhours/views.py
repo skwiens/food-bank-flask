@@ -16,6 +16,7 @@ import google.oauth2.credentials
 import datetime
 import calendar
 
+# SET ADMIN_EMAIL address through rundev.sh
 ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
 
 openhours_blueprint = Blueprint('openhours', __name__, template_folder='templates')
@@ -29,7 +30,6 @@ def index():
 
     if openhours:
         return redirect(url_for('openhours.openhours_pag', page_num=1))
-        # return render_template('openhours.html', openhours=openhours, next_month=next_month)
     else:
         msg = 'No Open Hours Found'
         return render_template('openhours.html', msg=msg, next_month=next_month)
@@ -39,6 +39,7 @@ def index():
 def new_openhour():
     form = OpenhourForm(request.form)
 
+    # Generate tuples of active volunteers and shoppers for the select form
     volunteer_list = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role!='shopper', Volunteer.active==True).order_by(Volunteer.name.asc())]
     form.volunteers.choices = volunteer_list
     form.volunteers.choices.insert(0, (-1, 'None'))
@@ -47,6 +48,7 @@ def new_openhour():
     form.shoppers.choices = shopper_list
     form.shoppers.choices.insert(0, (-1, 'None'))
 
+    # if form is submitted, create a new openhour and populate the volunteers and shoppers
     if request.method == 'POST' and form.validate():
         new_openhour = Openhour(date=form.date.data, posted=False)
         db.session.add(new_openhour)
@@ -61,9 +63,7 @@ def new_openhour():
                 new_openhour.shoppers.append(Volunteer.query.get(shopper))
 
         db.session.commit()
-
-        flash('Record for %s saved!' % new_openhour.date.strftime('%m/%d/%Y'), 'success')
-
+        flash('Open Hour for %s saved!' % new_openhour.date.strftime('%m/%d/%Y'), 'success')
         return redirect(url_for('openhours.index'))
 
     return render_template('openhour_form.html', form=form)
@@ -73,7 +73,7 @@ def new_openhour():
 def show_openhour(id):
     openhour = Openhour.query.get(id)
 
-
+    #If notes have been created for this date, assign them to notes
     if openhour.notes:
         notes = openhour.notes[0]
     else:
@@ -88,7 +88,6 @@ def edit_openhour(id):
     openhour = Openhour.query.get(id)
     form = OpenhourForm(request.form, obj=openhour)
 
-    #Dynamically create a list of volunteers to select for the openhour
     volunteer_list = [(volunteer.id, volunteer.name) for volunteer in Volunteer.query.filter(Volunteer.role != 'shopper').all()]
     form.volunteers.choices = volunteer_list
     form.volunteers.choices.insert(0, (-1, 'None'))
